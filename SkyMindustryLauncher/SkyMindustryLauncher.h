@@ -9,6 +9,7 @@
 #include <qstyle.h>
 #include <qstyleoption.h>
 #include <qfontdatabase.h>
+#include "scr/log.h"
 
 class SkyMindustryLauncher : public QMainWindow
 {
@@ -28,4 +29,5 @@ private:
 	Ui::SkyMindustryLauncherClass ui;
 	QPoint m_CurrentPressPoint;
 	QPoint m_CurrentPressPoint_global;
+	logger Logger;
 };
