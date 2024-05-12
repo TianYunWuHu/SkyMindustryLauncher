@@ -9,13 +9,9 @@
 enum LogLevel { info, warn, error, debug };
 
 class logger {
-private:
-	QFile LogFile;
 
 public:
-	logger();
-	~logger();
-	void log(LogLevel level, QString LogString);
+	static void log(LogLevel level, QString LogString);
 };
 
 #endif // !_LOC_LOG_H_

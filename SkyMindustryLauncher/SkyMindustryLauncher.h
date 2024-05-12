@@ -29,5 +29,4 @@ private:
 	Ui::SkyMindustryLauncherClass ui;
 	QPoint m_CurrentPressPoint;
 	QPoint m_CurrentPressPoint_global;
-	logger Logger;
 };

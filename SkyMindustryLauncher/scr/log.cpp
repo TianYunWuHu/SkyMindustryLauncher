@@ -1,18 +1,11 @@
 ﻿#include "log.h"
 
-//打开日志文件
-logger::logger() {
-	LogFile.setFileName("latest.log");
-	LogFile.open(QIODevice::WriteOnly | QIODevice::Truncate);
-}
-
-//关闭日志文件
-logger::~logger() {
-	LogFile.close();
-}
-
 //输出到调试台和日志文件
 void logger::log(LogLevel level, QString LogString) {
+	//打开日志文件
+	QFile LogFile;
+	LogFile.setFileName("latest.log");
+	LogFile.open(QIODevice::WriteOnly | QIODevice::Truncate);
 	QTime qtime = QTime::currentTime();
 	//获取当前时间
 	QString time = qtime.toString("[hh:mm:ss]");
@@ -36,4 +29,6 @@ void logger::log(LogLevel level, QString LogString) {
 		logFile << time << "[Debug]" << LogString << endl;
 		break;
 	}
+	//关闭日志文件
+	LogFile.close();
 }
