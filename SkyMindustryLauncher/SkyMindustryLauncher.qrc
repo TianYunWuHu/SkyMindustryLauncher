@@ -1,4 +1,11 @@
 <RCC>
-    <qresource prefix="SkyMindustryLauncher">
+    <qresource prefix="/SkyMindustryLauncher">
+        <file>rec/config.png</file>
+        <file>rec/download.png</file>
+        <file>rec/home.png</file>
+        <file>rec/settings.png</file>
+        <file>rec/close.png</file>
+        <file>rec/mini.png</file>
+        <file>rec/QuicksandboldRegular.otf</file>
     </qresource>
 </RCC>
