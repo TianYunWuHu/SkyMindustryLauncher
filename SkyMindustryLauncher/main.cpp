@@ -7,7 +7,7 @@ int main(int argc, char* argv[])
 	// 加载外部字体文件
 	QFontDatabase::addApplicationFont(":/SkyMindustryLauncher/rec/QuicksandboldRegular.otf");
 	//设置字体
-	QFont f("微软雅黑", 12);
+	QFont f("黑体", 12);
 	a.setFont(f);
 	SkyMindustryLauncher w;
 	w.show();

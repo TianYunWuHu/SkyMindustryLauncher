@@ -156,7 +156,7 @@ background-color: rgba(0,0,0,60);
      <property name="styleSheet">
       <string notr="true">background-color: rgb(170, 170, 255);</string>
      </property>
-     <widget class="QPushButton" name="home">
+     <widget class="QPushButton" name="HomeButton">
       <property name="geometry">
        <rect>
         <x>0</x>
@@ -193,7 +193,7 @@ background-color: rgba(0,0,0,30);
        <bool>true</bool>
       </property>
      </widget>
-     <widget class="QPushButton" name="config">
+     <widget class="QPushButton" name="ConfigButton">
       <property name="geometry">
        <rect>
         <x>0</x>
@@ -230,7 +230,7 @@ background-color: rgba(0,0,0,30);
        <bool>true</bool>
       </property>
      </widget>
-     <widget class="QPushButton" name="download">
+     <widget class="QPushButton" name="DownloadButton">
       <property name="geometry">
        <rect>
         <x>0</x>
@@ -267,7 +267,7 @@ background-color: rgba(0,0,0,30);
        <bool>true</bool>
       </property>
      </widget>
-     <widget class="QPushButton" name="settings">
+     <widget class="QPushButton" name="SettingsButton">
       <property name="geometry">
        <rect>
         <x>0</x>

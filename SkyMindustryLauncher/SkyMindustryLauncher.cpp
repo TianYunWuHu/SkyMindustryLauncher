@@ -4,6 +4,7 @@ SkyMindustryLauncher::SkyMindustryLauncher(QWidget* parent)
 	: QMainWindow(parent)
 {
 	ui.setupUi(this);
+	CurrentWidget = nullptr;
 	//设置无边框
 	setWindowFlags(windowFlags() | Qt::FramelessWindowHint);
 	//窗口阴影
@@ -41,4 +42,9 @@ void SkyMindustryLauncher::on_MiniButton_clicked() {
 }
 void SkyMindustryLauncher::on_CloseButton_clicked() {
 	this->close();
+}
+
+void SkyMindustryLauncher::on_HomeButton_clicked() {
+	delete CurrentWidget;
+	CurrentWidget = new HomeWidget(ui.MainFrame);
 }

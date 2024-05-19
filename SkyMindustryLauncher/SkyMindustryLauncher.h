@@ -10,6 +10,7 @@
 #include <qstyleoption.h>
 #include <qfontdatabase.h>
 #include "scr/log.h"
+#include "scr/SMLWidgets.h"
 
 class SkyMindustryLauncher : public QMainWindow
 {
@@ -24,9 +25,11 @@ public slots:
 	void mouseMoveEvent(QMouseEvent* e);
 	void on_CloseButton_clicked();
 	void on_MiniButton_clicked();
+	void on_HomeButton_clicked();
 
 private:
 	Ui::SkyMindustryLauncherClass ui;
 	QPoint m_CurrentPressPoint;
 	QPoint m_CurrentPressPoint_global;
+	SMLWidgets* CurrentWidget;
 };

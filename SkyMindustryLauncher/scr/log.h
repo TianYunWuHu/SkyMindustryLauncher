@@ -14,4 +14,4 @@ public:
 	static void log(LogLevel level, QString LogString);
 };
 
-#endif // !_LOC_LOG_H_
+#endif // !_SML_LOG_H_
