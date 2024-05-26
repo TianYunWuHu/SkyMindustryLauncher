@@ -6,6 +6,8 @@
 #include <qpushbutton.h>
 #include <qicon.h>
 #include <qsize.h>
+#include <qscrollarea.h>
+#include <qscrollbar.h>
 #include "log.h"
 
 class SMLWidgets :
@@ -32,4 +34,19 @@ private:
 	QPushButton* LaunchButton;
 };
 
+class ConfigWidget :
+	public SMLWidgets {
+
+	Q_OBJECT
+
+public:
+	ConfigWidget(QWidget* parent);
+	~ConfigWidget();
+
+private:
+	QPushButton* TitleIcon;
+	QLabel* title;
+	QScrollArea* VersionList;
+	QWidget* VersionListWidget;
+};
 #endif // !_SML_SMLWIDGETS_H_

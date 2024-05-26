@@ -26,6 +26,7 @@ public slots:
 	void on_CloseButton_clicked();
 	void on_MiniButton_clicked();
 	void on_HomeButton_clicked();
+	void on_ConfigButton_clicked();
 
 private:
 	Ui::SkyMindustryLauncherClass ui;
