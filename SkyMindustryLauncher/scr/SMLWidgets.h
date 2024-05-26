@@ -4,6 +4,8 @@
 #include <qwidget.h>
 #include <qlabel.h>
 #include <qpushbutton.h>
+#include <qicon.h>
+#include <qsize.h>
 #include "log.h"
 
 class SMLWidgets :
@@ -21,8 +23,11 @@ class HomeWidget :
 
 public:
 	HomeWidget(QWidget* parent);
+	~HomeWidget();
 
 private:
+	QPushButton* TitleIcon;
+	QLabel* title;
 	QLabel* LaunchBar;
 	QPushButton* LaunchButton;
 };
