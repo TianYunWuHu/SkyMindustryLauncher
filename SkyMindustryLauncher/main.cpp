@@ -9,6 +9,8 @@ int main(int argc, char* argv[])
 	//设置字体
 	QFont f("黑体", 12);
 	a.setFont(f);
+	//初始化日志模块
+	logger::initialize();
 	SkyMindustryLauncher w;
 	w.show();
 	return a.exec();

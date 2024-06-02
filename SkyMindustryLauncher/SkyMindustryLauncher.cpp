@@ -14,6 +14,8 @@ SkyMindustryLauncher::SkyMindustryLauncher(QWidget* parent)
 	effect->setColor(QColor::fromRgbF(0, 0, 0, 0.7));
 	effect->setOffset(0, 0);
 	ui.MainFrame->setGraphicsEffect(effect);
+	logger::log(debug, "111111");
+	logger::log(debug, "111111");
 }
 
 SkyMindustryLauncher::~SkyMindustryLauncher()

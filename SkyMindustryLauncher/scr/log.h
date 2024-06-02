@@ -11,6 +11,7 @@ enum LogLevel { info, warn, error, debug };
 class logger {
 
 public:
+	static void initialize();
 	static void log(LogLevel level, QString LogString);
 };
 

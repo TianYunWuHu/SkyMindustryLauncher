@@ -1,11 +1,18 @@
 ﻿#include "log.h"
 
+void logger::initialize() {
+	QFile initialization;
+	initialization.setFileName("latest.log");
+	initialization.open(QIODevice::WriteOnly | QIODevice::Truncate);
+	initialization.close();
+}
+
 //输出到调试台和日志文件
 void logger::log(LogLevel level, QString LogString) {
 	//打开日志文件
 	QFile LogFile;
 	LogFile.setFileName("latest.log");
-	LogFile.open(QIODevice::WriteOnly | QIODevice::Truncate);
+	LogFile.open(QIODevice::Append);
 	QTime qtime = QTime::currentTime();
 	//获取当前时间
 	QString time = qtime.toString("[hh:mm:ss]");
