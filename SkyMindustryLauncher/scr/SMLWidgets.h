@@ -49,4 +49,20 @@ private:
 	QScrollArea* VersionList;
 	QWidget* VersionListWidget;
 };
+
+class DownloadWidget :
+	public SMLWidgets {
+
+	Q_OBJECT
+
+public:
+	DownloadWidget(QWidget* parent);
+	~DownloadWidget();
+
+private:
+	QPushButton* TitleIcon;
+	QLabel* title;
+	QScrollArea* VersionList;
+	QWidget* VersionListWidget;
+};
 #endif // !_SML_SMLWIDGETS_H_

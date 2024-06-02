@@ -52,3 +52,7 @@ void SkyMindustryLauncher::on_ConfigButton_clicked() {
 	delete CurrentWidget;
 	CurrentWidget = new ConfigWidget(ui.MainFrame);
 }
+void SkyMindustryLauncher::on_DownloadButton_clicked() {
+	delete CurrentWidget;
+	CurrentWidget = new DownloadWidget(ui.MainFrame);
+}
