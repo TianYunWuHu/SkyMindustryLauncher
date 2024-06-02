@@ -72,7 +72,7 @@ ConfigWidget::~ConfigWidget() {
 }
 
 DownloadWidget::DownloadWidget(QWidget* parent) {
-	//创建config界面
+	//创建download界面
 	this->setParent(parent);
 	this->setGeometry(50, 40, 590, 390);
 	this->setStyleSheet("background-color: rgba(0, 0, 0, 0)");
@@ -106,4 +106,45 @@ DownloadWidget::~DownloadWidget() {
 	delete title;
 	delete VersionListWidget;
 	delete VersionList;
+}
+
+SettingsWidget::SettingsWidget(QWidget* parent) {
+	//创建settings界面
+	this->setParent(parent);
+	this->setGeometry(50, 40, 590, 390);
+	this->setStyleSheet("background-color: rgba(0, 0, 0, 0)");
+	//生成控件
+	TitleIcon = new QPushButton(this);
+	title = new QLabel(this);
+	submenu = new QWidget(this);
+	OptionScrollArea = new QScrollArea(this);
+	OptionWidget = new QWidget(OptionScrollArea);
+	//设置控件属性
+	TitleIcon->setGeometry(0, 0, 40, 40);
+	TitleIcon->setStyleSheet("border-style:inset;background-color: rgb(255, 255, 255);");
+	TitleIcon->setIcon(QIcon(":/SkyMindustryLauncher/rec/settings.png"));
+	TitleIcon->setIconSize(QSize(20, 20));
+	TitleIcon->setDisabled(true);
+	title->setGeometry(40, 0, 550, 40);
+	title->setStyleSheet("background-color: rgb(255, 255, 255);");
+	title->setText("设置");
+	submenu->setGeometry(0, 40, 100, 350);
+	submenu->setStyleSheet("background-color: rgba(170, 170, 255, 150);");
+	OptionWidget->setGeometry(0, 0, 480, 400);
+	OptionWidget->setMinimumSize(QSize(480, 400));
+	OptionWidget->setStyleSheet("background-color: rgba(0, 0, 0, 0);");
+	OptionScrollArea->setGeometry(100, 40, 490, 350);
+	OptionScrollArea->setStyleSheet("border: none;");
+	OptionScrollArea->verticalScrollBar()->setStyleSheet("QScrollBar:vertical{width: 10px;padding-top: 0px;padding-bottom: 0px;}QScrollBar::handle:vertical{background-color: rgb(140, 140, 140)}QScrollBar::handle:vertical:hover{background-color: rgb(90, 90, 90)}QScrollBar::add-line:vertical{height: 0px;width: 10px;subcontrol-position: bottom;}QScrollBar::sub-line:vertical{height: 0px;width: 10px;subcontrol-position: top;}QScrollBar::add-page:vertical,QScrollBar::sub-page:vertical{background-color: rgba(0, 0, 0, 0);}");
+	OptionScrollArea->setWidget(OptionWidget);
+	OptionScrollArea->setWidgetResizable(true);
+	this->show();
+}
+
+SettingsWidget::~SettingsWidget() {
+	delete TitleIcon;
+	delete title;
+	delete submenu;
+	delete OptionWidget;
+	delete OptionScrollArea;
 }

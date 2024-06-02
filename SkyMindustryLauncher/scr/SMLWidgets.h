@@ -65,4 +65,21 @@ private:
 	QScrollArea* VersionList;
 	QWidget* VersionListWidget;
 };
+
+class SettingsWidget :
+	public SMLWidgets {
+
+	Q_OBJECT
+
+public:
+	SettingsWidget(QWidget* parent);
+	~SettingsWidget();
+
+private:
+	QPushButton* TitleIcon;
+	QLabel* title;
+	QWidget* submenu;
+	QScrollArea* OptionScrollArea;
+	QWidget* OptionWidget;
+};
 #endif // !_SML_SMLWIDGETS_H_
