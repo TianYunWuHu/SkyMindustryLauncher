@@ -5,6 +5,7 @@
 #include <qfile.h>
 #include <QTime>
 #include <qtextstream.h>
+#include <qchar.h>
 
 enum LogLevel { info, warn, error, debug };
 
@@ -12,7 +13,7 @@ class logger {
 
 public:
 	static void initialize();
-	static void log(LogLevel level, QString LogString);
+	static void log(LogLevel level, QString LogString ...);
 };
 
 #endif // !_SML_LOG_H_

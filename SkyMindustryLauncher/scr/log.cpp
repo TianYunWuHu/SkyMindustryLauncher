@@ -8,7 +8,7 @@ void logger::initialize() {
 }
 
 //输出到调试台和日志文件
-void logger::log(LogLevel level, QString LogString) {
+void logger::log(LogLevel level, QString String ...) {
 	//打开日志文件
 	QFile LogFile;
 	LogFile.setFileName("latest.log");
@@ -17,6 +17,40 @@ void logger::log(LogLevel level, QString LogString) {
 	//获取当前时间
 	QString time = qtime.toString("[hh:mm:ss]");
 	QTextStream logFile(&LogFile);
+	//设置可变参数
+	QString LogString = "";
+	char ch;
+	va_list list;
+	va_start(list, String);
+	for (int i = 0; i < String.length(); i++) {
+		ch = String[i].toLatin1();
+		if (ch == '%') {
+			if (i + 1 == String.length()) {
+				LogString += "%";
+				break;
+			}
+			i++;
+			ch = String[i].toLatin1();
+			switch (ch)
+			{
+			case 's':
+				LogString += va_arg(list, char*);
+				break;
+			case 'd':
+				LogString += QString::number(va_arg(list, int));
+				break;
+			case 'f':
+				LogString += QString::number(va_arg(list, double));
+				break;
+			default:
+				LogString += String.mid(i, i + 1);
+			}
+		}
+		else
+		{
+			LogString += String[i];
+		}
+	}
 	switch (level)
 	{
 	case info:
