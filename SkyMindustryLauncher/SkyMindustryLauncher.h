@@ -11,6 +11,7 @@
 #include <qfontdatabase.h>
 #include "scr/log.h"
 #include "scr/SMLWidgets.h"
+#include "scr/SMLMessageBox.h"
 
 class SkyMindustryLauncher : public QMainWindow
 {

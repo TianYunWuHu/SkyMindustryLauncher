@@ -46,6 +46,9 @@
     <ClCompile Include="scr\SMLWidgets.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="scr\SMLMessageBox.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="scr\log.h">
@@ -54,6 +57,9 @@
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="scr\SMLWidgets.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="scr\SMLMessageBox.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>

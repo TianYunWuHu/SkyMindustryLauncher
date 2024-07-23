@@ -7,5 +7,8 @@
         <file>rec/close.png</file>
         <file>rec/mini.png</file>
         <file>rec/QuicksandboldRegular.otf</file>
+        <file>rec/info.png</file>
+        <file>rec/error.png</file>
+        <file>rec/warn.png</file>
     </qresource>
 </RCC>

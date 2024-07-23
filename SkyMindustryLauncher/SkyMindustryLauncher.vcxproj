@@ -98,6 +98,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="scr\SMLWidgets.cpp" />
+    <ClCompile Include="scr\SMLMessageBox.cpp" />
     <QtRcc Include="SkyMindustryLauncher.qrc" />
     <QtUic Include="SkyMindustryLauncher.ui" />
     <QtMoc Include="SkyMindustryLauncher.h" />
@@ -107,6 +108,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="scr\log.h" />
+    <QtMoc Include="scr\SMLMessageBox.h" />
     <QtMoc Include="scr\SMLWidgets.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
