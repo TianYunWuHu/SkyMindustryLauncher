@@ -42,8 +42,12 @@ void logger::log(LogLevel level, QString String ...) {
 			case 'f':
 				LogString += QString::number(va_arg(list, double));
 				break;
+			case 'q':
+				LogString += va_arg(list, QString);
+				break;
 			default:
-				LogString += String.mid(i, i + 1);
+				LogString += ("%" + String[i]);
+				break;
 			}
 		}
 		else
