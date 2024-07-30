@@ -9,6 +9,9 @@
 #include <qstyle.h>
 #include <qstyleoption.h>
 #include <qfontdatabase.h>
+#include <qsettings.h>
+#include <qdir.h>
+#include <qfileinfo.h>
 #include "scr/log.h"
 #include "scr/SMLWidgets.h"
 #include "scr/SMLMessageBox.h"
@@ -36,4 +39,9 @@ private:
 	QPoint m_CurrentPressPoint;
 	QPoint m_CurrentPressPoint_global;
 	SMLWidgets* CurrentWidget;
+	QSettings* setting;
+	QDir dir;
+
+	void LessWindowsHint();//无边框
+	void EnvironmentINIT();
 };

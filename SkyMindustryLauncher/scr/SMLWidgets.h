@@ -8,7 +8,9 @@
 #include <qsize.h>
 #include <qscrollarea.h>
 #include <qscrollbar.h>
-#include "log.h"
+#include <qlist.h>
+#include "scr/log.h"
+#include "scr/SMLThread.h"
 
 class SMLWidgets :
 	public QWidget
@@ -25,7 +27,6 @@ class HomeWidget :
 
 public:
 	HomeWidget(QWidget* parent);
-	~HomeWidget();
 
 private:
 	QPushButton* TitleIcon;
@@ -41,13 +42,20 @@ class ConfigWidget :
 
 public:
 	ConfigWidget(QWidget* parent);
-	~ConfigWidget();
+
+public slots:
+	void GotVersionList(QList<VersionInfo>);
 
 private:
-	QPushButton* TitleIcon;
-	QLabel* title;
-	QScrollArea* VersionList;
-	QWidget* VersionListWidget;
+	QPushButton* TitleIcon;//图标
+	QLabel* title;//标题栏
+	QScrollArea* VersionList;//滚动区域
+	QWidget* VersionListWidget;//滚动区内的区域
+	QLabel* InfoText;//提示标语
+	GetVersionListT* GVLT;//获取版本列表线程
+	QList<VersionInfo>* VerList;//版本列表
+	QList<QPushButton*> ButtonBox;//界面上的版本列表选项组
+	void ArrangeButton(QWidget* parent);//根据版本列表排列选项组
 };
 
 class DownloadWidget :
@@ -57,7 +65,6 @@ class DownloadWidget :
 
 public:
 	DownloadWidget(QWidget* parent);
-	~DownloadWidget();
 
 private:
 	QPushButton* TitleIcon;
@@ -73,7 +80,6 @@ class SettingsWidget :
 
 public:
 	SettingsWidget(QWidget* parent);
-	~SettingsWidget();
 
 private:
 	QPushButton* TitleIcon;

@@ -99,6 +99,7 @@
   <ItemGroup>
     <ClCompile Include="scr\SMLWidgets.cpp" />
     <ClCompile Include="scr\SMLMessageBox.cpp" />
+    <ClCompile Include="scr\SMLThread.cpp" />
     <QtRcc Include="SkyMindustryLauncher.qrc" />
     <QtUic Include="SkyMindustryLauncher.ui" />
     <QtMoc Include="SkyMindustryLauncher.h" />
@@ -108,6 +109,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="scr\log.h" />
+    <QtMoc Include="scr\SMLThread.h" />
     <QtMoc Include="scr\SMLMessageBox.h" />
     <QtMoc Include="scr\SMLWidgets.h" />
   </ItemGroup>

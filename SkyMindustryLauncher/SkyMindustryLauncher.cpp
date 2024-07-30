@@ -3,17 +3,8 @@
 SkyMindustryLauncher::SkyMindustryLauncher(QWidget* parent)
 	: QMainWindow(parent)
 {
-	ui.setupUi(this);
-	CurrentWidget = nullptr;
-	//设置无边框
-	setWindowFlags(windowFlags() | Qt::FramelessWindowHint);
-	//窗口阴影
-	this->setAttribute(Qt::WA_TranslucentBackground, true);
-	QGraphicsDropShadowEffect* effect = new QGraphicsDropShadowEffect();
-	effect->setBlurRadius(10);
-	effect->setColor(QColor::fromRgbF(0, 0, 0, 0.7));
-	effect->setOffset(0, 0);
-	ui.MainFrame->setGraphicsEffect(effect);
+	LessWindowsHint();
+	EnvironmentINIT();
 }
 
 SkyMindustryLauncher::~SkyMindustryLauncher()
@@ -34,6 +25,40 @@ void SkyMindustryLauncher::mouseMoveEvent(QMouseEvent* e)
 	{
 		QPoint offset = e->globalPos() - m_CurrentPressPoint_global;//计算鼠标移动位置
 		this->move(e->globalPos() - m_CurrentPressPoint);
+	}
+}
+//构造函数中初始化
+void SkyMindustryLauncher::LessWindowsHint() {
+	ui.setupUi(this);
+	CurrentWidget = nullptr;
+	//设置无边框
+	setWindowFlags(windowFlags() | Qt::FramelessWindowHint);
+	//窗口阴影
+	this->setAttribute(Qt::WA_TranslucentBackground, true);
+	QGraphicsDropShadowEffect* effect = new QGraphicsDropShadowEffect();
+	effect->setBlurRadius(10);
+	effect->setColor(QColor::fromRgbF(0, 0, 0, 0.7));
+	effect->setOffset(0, 0);
+	ui.MainFrame->setGraphicsEffect(effect);
+}
+void SkyMindustryLauncher::EnvironmentINIT() {
+	dir.cd(QDir::currentPath());
+	if (QFileInfo("./SML").isDir() == false) {
+		dir.mkdir("./SML");
+		if (QFile::exists("./SML/settings.ini") == false) {
+			QFile ini("./SML/settings.ini");
+			ini.open(QIODevice::WriteOnly);
+			ini.close();
+			setting = new QSettings("./SML/settings.ini", QSettings::IniFormat);
+			setting->setValue("/game/CurrentVersion", "");
+		}
+	}
+	else
+	{
+		setting = new QSettings("./SML/settings.ini", QSettings::IniFormat);
+	}
+	if (dir.exists("Game") == false) {
+		dir.mkdir("Game");
 	}
 }
 

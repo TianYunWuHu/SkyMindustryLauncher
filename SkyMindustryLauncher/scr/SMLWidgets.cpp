@@ -27,13 +27,6 @@ HomeWidget::HomeWidget(QWidget* parent) {
 	this->show();
 }
 
-HomeWidget::~HomeWidget() {
-	delete TitleIcon;
-	delete title;
-	delete LaunchBar;
-	delete LaunchButton;
-}
-
 ConfigWidget::ConfigWidget(QWidget* parent) {
 	//创建config界面
 	this->setParent(parent);
@@ -43,7 +36,9 @@ ConfigWidget::ConfigWidget(QWidget* parent) {
 	TitleIcon = new QPushButton(this);
 	title = new QLabel(this);
 	VersionList = new QScrollArea(this);
-	VersionListWidget = new QWidget(VersionList);
+	VersionListWidget = new QWidget();
+	InfoText = new QLabel(this);
+	GVLT = new GetVersionListT();
 	//设置控件属性
 	TitleIcon->setGeometry(0, 0, 40, 40);
 	TitleIcon->setStyleSheet("border-style:inset;background-color: rgb(255, 255, 255);");
@@ -53,22 +48,50 @@ ConfigWidget::ConfigWidget(QWidget* parent) {
 	title->setGeometry(40, 0, 550, 40);
 	title->setStyleSheet("background-color: rgb(255, 255, 255);");
 	title->setText("配置游戏");
-	VersionListWidget->setGeometry(0, 0, 580, 400);
-	VersionListWidget->setMinimumSize(QSize(580, 400));
+	VersionListWidget->setGeometry(0, 0, 590, 0);
 	VersionListWidget->setStyleSheet("background-color: rgba(0, 0, 0, 0);");
 	VersionList->setGeometry(0, 40, 590, 350);
 	VersionList->setStyleSheet("border: none;");
 	VersionList->verticalScrollBar()->setStyleSheet("QScrollBar:vertical{width: 10px;padding-top: 0px;padding-bottom: 0px;}QScrollBar::handle:vertical{background-color: rgb(140, 140, 140)}QScrollBar::handle:vertical:hover{background-color: rgb(90, 90, 90)}QScrollBar::add-line:vertical{height: 0px;width: 10px;subcontrol-position: bottom;}QScrollBar::sub-line:vertical{height: 0px;width: 10px;subcontrol-position: top;}QScrollBar::add-page:vertical,QScrollBar::sub-page:vertical{background-color: rgba(0, 0, 0, 0);}");
-	VersionList->setWidget(VersionListWidget);
 	VersionList->setWidgetResizable(true);
+	InfoText->setGeometry(0, 155, 590, 40);
+	InfoText->setStyleSheet("background-color: rgba(255, 255, 255, 0);");
+	InfoText->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+	InfoText->setText("正在加载版本列表...");
+	//设置获取版本列表线程
+	qRegisterMetaType<QList<VersionInfo>>("QList<VersionInfo>");
+	connect(GVLT, SIGNAL(GetVersionList(QList<VersionInfo>)), this, SLOT(GotVersionList(QList<VersionInfo>)));
+	GVLT->start();
 	this->show();
 }
 
-ConfigWidget::~ConfigWidget() {
-	delete TitleIcon;
-	delete title;
-	delete VersionListWidget;
-	delete VersionList;
+void ConfigWidget::GotVersionList(QList<VersionInfo> verList) {
+	this->VerList = &verList;
+	ArrangeButton(VersionListWidget);
+	VersionList->setWidget(VersionListWidget);
+	VersionListWidget->show();
+}
+
+void ConfigWidget::ArrangeButton(QWidget* parent) {
+	if (VerList->size() != 0) {
+		int w = 590;
+		if (VerList->size() > 5) {
+			w = 580;
+		}
+		for (int i = 0; i < VerList->size(); i++) {
+			QPushButton* tempButton = new QPushButton(parent);
+			tempButton->setText(VerList->at(i).name);
+			tempButton->setGeometry(0, i * 60, w, 60);
+			tempButton->setStyleSheet("QPushButton{background-color: rgba(0, 0, 0, 30);color: rgb(255, 255, 255);border-style: inset;font-size: 20px;}QPushButton:hover{background-color: rgba(0, 0, 0, 60);}QPushButton:pressed{background-color: rgba(0, 0, 0, 90);}");
+			ButtonBox.append(tempButton);
+		}
+		VersionListWidget->setMinimumSize(w, VerList->size() * 60);
+		InfoText->setText("");
+	}
+	else
+	{
+		InfoText->setText("当前无版本，快去下载吧！");
+	}
 }
 
 DownloadWidget::DownloadWidget(QWidget* parent) {
@@ -99,13 +122,6 @@ DownloadWidget::DownloadWidget(QWidget* parent) {
 	VersionList->setWidget(VersionListWidget);
 	VersionList->setWidgetResizable(true);
 	this->show();
-}
-
-DownloadWidget::~DownloadWidget() {
-	delete TitleIcon;
-	delete title;
-	delete VersionListWidget;
-	delete VersionList;
 }
 
 SettingsWidget::SettingsWidget(QWidget* parent) {
@@ -139,12 +155,4 @@ SettingsWidget::SettingsWidget(QWidget* parent) {
 	OptionScrollArea->setWidget(OptionWidget);
 	OptionScrollArea->setWidgetResizable(true);
 	this->show();
-}
-
-SettingsWidget::~SettingsWidget() {
-	delete TitleIcon;
-	delete title;
-	delete submenu;
-	delete OptionWidget;
-	delete OptionScrollArea;
 }
