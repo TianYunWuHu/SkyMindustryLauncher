@@ -79,17 +79,20 @@ void ConfigWidget::ArrangeButton(QWidget* parent) {
 			w = 580;
 		}
 		for (int i = 0; i < VerList->size(); i++) {
-			QPushButton* tempButton = new QPushButton(parent);
+			InfoButton* tempButton = new InfoButton(parent);
 			tempButton->setText(VerList->at(i).name);
 			tempButton->setGeometry(0, i * 60, w, 60);
-			tempButton->setStyleSheet("QPushButton{background-color: rgba(0, 0, 0, 30);color: rgb(255, 255, 255);border-style: inset;font-size: 20px;}QPushButton:hover{background-color: rgba(0, 0, 0, 60);}QPushButton:pressed{background-color: rgba(0, 0, 0, 90);}");
+			tempButton->setStyleSheet("QPushButton{background-color: rgba(0, 0, 0, 30);color: rgb(255, 255, 255);border-style: inset;font-size: 20px;text-align: left;}QPushButton:hover{background-color: rgba(0, 0, 0, 60);}QPushButton:pressed{background-color: rgba(0, 0, 0, 90);}");
+			tempButton->setSubTitle(QString::number(VerList->at(i).ver));
 			ButtonBox.append(tempButton);
 		}
 		VersionListWidget->setMinimumSize(w, VerList->size() * 60);
+		InfoText->lower();
 		InfoText->setText("");
 	}
 	else
 	{
+		InfoText->raise();
 		InfoText->setText("当前无版本，快去下载吧！");
 	}
 }

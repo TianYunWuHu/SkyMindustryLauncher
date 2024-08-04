@@ -52,6 +52,9 @@
     <ClCompile Include="scr\SMLThread.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="scr\SMLCustomControl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="scr\log.h">
@@ -66,6 +69,9 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="scr\SMLThread.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="scr\SMLCustomControl.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>

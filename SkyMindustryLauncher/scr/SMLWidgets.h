@@ -11,6 +11,7 @@
 #include <qlist.h>
 #include "scr/log.h"
 #include "scr/SMLThread.h"
+#include "scr/SMLCustomControl.h"
 
 class SMLWidgets :
 	public QWidget
@@ -54,7 +55,7 @@ private:
 	QLabel* InfoText;//提示标语
 	GetVersionListT* GVLT;//获取版本列表线程
 	QList<VersionInfo>* VerList;//版本列表
-	QList<QPushButton*> ButtonBox;//界面上的版本列表选项组
+	QList<InfoButton*> ButtonBox;//界面上的版本列表选项组
 	void ArrangeButton(QWidget* parent);//根据版本列表排列选项组
 };
 
