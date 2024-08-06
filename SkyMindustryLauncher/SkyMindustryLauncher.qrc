@@ -10,5 +10,6 @@
         <file>rec/info.png</file>
         <file>rec/error.png</file>
         <file>rec/warn.png</file>
+        <file>rec/back.png</file>
     </qresource>
 </RCC>

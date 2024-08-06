@@ -1,6 +1,7 @@
 ﻿#include "SMLThread.h"
 
 void GetVersionListT::run() {
+	VerList.clear();
 	QDir dir(QDir::currentPath());
 	dir.cd("./Game");
 	QFileInfoList fileInfoList = dir.entryInfoList(QDir::NoDotAndDotDot | QDir::Dirs);

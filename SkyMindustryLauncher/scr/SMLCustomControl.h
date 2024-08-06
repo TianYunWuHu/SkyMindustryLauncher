@@ -10,12 +10,19 @@ class InfoButton :
 	Q_OBJECT
 
 public:
+	int number;
 	InfoButton(QWidget* parent);
 	void paintEvent(QPaintEvent* p);
 	void setSubTitle(const QString& text);
 
 private:
 	QString SubTitle = "";
+
+public slots:
+	void Clicked();
+
+signals:
+	void Number(int);
 };
 
 #endif // !_SML_CUSTOMCONTROL_H_

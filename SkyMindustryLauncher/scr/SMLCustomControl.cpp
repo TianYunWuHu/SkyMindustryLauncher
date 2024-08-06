@@ -1,7 +1,7 @@
 ﻿#include "SMLCustomControl.h"
 
 InfoButton::InfoButton(QWidget* parent) : QPushButton(parent) {
-
+	connect(this, SIGNAL(clicked()), this, SLOT(Clicked()));
 }
 
 void InfoButton::paintEvent(QPaintEvent* p) {
@@ -15,4 +15,8 @@ void InfoButton::paintEvent(QPaintEvent* p) {
 void InfoButton::setSubTitle(const QString& text) {
 	SubTitle = text;
 	this->update();
+}
+
+void InfoButton::Clicked() {
+	emit Number(number);
 }
