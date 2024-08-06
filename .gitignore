@@ -365,3 +365,6 @@ FodyWeavers.xsd
 #测试文件和文件夹
 Game/
 SML/
+
+#与编译无关文件
+ErrorList.txt

@@ -23,7 +23,7 @@ MsgWidget::MsgWidget(QWidget* parent, MessageBoxType type, QString text, QString
 	this->TitleIcon = new QLabel(this->MainFrame);
 	this->button1 = new QPushButton(this->MainFrame);//确定
 	//初始化
-	this->setGeometry(parent->x() + 140, parent->y() + 85, 350, 250);
+	this->setGeometry(parent->mapToGlobal(QPoint(0, 0)).x() + 140, parent->mapToGlobal(QPoint(0, 0)).y() + 85, 350, 250);
 	this->setParent(nullptr);
 	this->MainFrame->setGeometry(5, 5, 340, 240);
 	this->MainFrame->setStyleSheet("background-color: rgb(255, 255, 255);");
@@ -52,6 +52,7 @@ MsgWidget::MsgWidget(QWidget* parent, MessageBoxType type, QString text, QString
 			this->button3->setText(Button3Text);
 			connect(this->button3, &QPushButton::clicked, this, &MsgWidget::Button3);
 		}
+		logger::log(info, text);
 		break;
 	case Warn:
 		this->TitleBar->setText("警告");
@@ -70,6 +71,7 @@ MsgWidget::MsgWidget(QWidget* parent, MessageBoxType type, QString text, QString
 			this->button3->setText(Button3Text);
 			connect(this->button3, &QPushButton::clicked, this, &MsgWidget::Button3);
 		}
+		logger::log(warn, text);
 		break;
 	case Error:
 		this->TitleBar->setText("错误");
@@ -83,6 +85,7 @@ MsgWidget::MsgWidget(QWidget* parent, MessageBoxType type, QString text, QString
 			this->button3->setText(Button3Text);
 			connect(this->button3, &QPushButton::clicked, this, &MsgWidget::Button3);
 		}
+		logger::log(error, text);
 		break;
 	}
 }
