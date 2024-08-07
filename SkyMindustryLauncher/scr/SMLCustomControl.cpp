@@ -1,4 +1,5 @@
-﻿#include "SMLCustomControl.h"
+﻿#include "stdafx.h"
+#include "SMLCustomControl.h"
 
 InfoButton::InfoButton(QWidget* parent) : QPushButton(parent) {
 	connect(this, SIGNAL(clicked()), this, SLOT(Clicked()));

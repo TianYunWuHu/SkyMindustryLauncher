@@ -1,4 +1,5 @@
-﻿#include "SMLThread.h"
+﻿#include "stdafx.h"
+#include "SMLThread.h"
 
 void GetVersionListT::run() {
 	VerList.clear();

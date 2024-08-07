@@ -1,11 +1,7 @@
 ﻿#ifndef _SML_LOG_H_
 #define _SML_LOG_H_
 
-#include <qdebug.h>
-#include <qfile.h>
-#include <QTime>
-#include <qtextstream.h>
-#include <qchar.h>
+#include "stdafx.h"
 
 enum LogLevel { info, warn, error, debug };
 

@@ -2,16 +2,7 @@
 
 #include <QtWidgets/QMainWindow>
 #include "ui_SkyMindustryLauncher.h"
-#include <qgraphicseffect.h>
-#include <QMouseEvent>
-#include <qfile.h>
-#include <qdebug.h>
-#include <qstyle.h>
-#include <qstyleoption.h>
-#include <qfontdatabase.h>
-#include <qsettings.h>
-#include <qdir.h>
-#include <qfileinfo.h>
+#include "stdafx.h"
 #include "scr/log.h"
 #include "scr/SMLWidgets.h"
 #include "scr/SMLMessageBox.h"

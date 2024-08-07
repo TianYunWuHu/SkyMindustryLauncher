@@ -1,4 +1,5 @@
-﻿#include "SkyMindustryLauncher.h"
+﻿#include "stdafx.h"
+#include "SkyMindustryLauncher.h"
 
 SkyMindustryLauncher::SkyMindustryLauncher(QWidget* parent)
 	: QMainWindow(parent)

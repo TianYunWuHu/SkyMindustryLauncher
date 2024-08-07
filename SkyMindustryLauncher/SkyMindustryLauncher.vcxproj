@@ -66,6 +66,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
+      <PrecompiledHeader>Use</PrecompiledHeader>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="Configuration">
@@ -101,6 +102,10 @@
     <ClCompile Include="scr\SMLWidgets.cpp" />
     <ClCompile Include="scr\SMLMessageBox.cpp" />
     <ClCompile Include="scr\SMLThread.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
     <QtRcc Include="SkyMindustryLauncher.qrc" />
     <QtUic Include="SkyMindustryLauncher.ui" />
     <QtMoc Include="SkyMindustryLauncher.h" />
@@ -110,6 +115,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="scr\log.h" />
+    <ClInclude Include="stdafx.h" />
     <QtMoc Include="scr\SMLCustomControl.h" />
     <QtMoc Include="scr\SMLThread.h" />
     <QtMoc Include="scr\SMLMessageBox.h" />

@@ -1,4 +1,5 @@
-﻿#include "SMLMessageBox.h"
+﻿#include "stdafx.h"
+#include "SMLMessageBox.h"
 
 int SMLMessageBox::msgbox(QWidget* parent, MessageBoxType type, QString text, QString Button3Text) {
 	MsgWidget* MessageBox = new MsgWidget(parent, type, text, Button3Text);

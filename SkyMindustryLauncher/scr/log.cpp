@@ -1,4 +1,5 @@
-﻿#include "log.h"
+﻿#include "stdafx.h"
+#include "log.h"
 
 void logger::initialize() {
 	QFile initialization;

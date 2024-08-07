@@ -1,8 +1,7 @@
 ﻿#ifndef _SML_CUSTOMCONTROL_H_
 #define _SML_CUSTOMCONTROL_H_
 
-#include <qpushbutton.h>
-#include <qpainter.h>
+#include "stdafx.h"
 
 class InfoButton :
 	public QPushButton {

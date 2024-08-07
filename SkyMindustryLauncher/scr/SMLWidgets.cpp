@@ -1,4 +1,5 @@
-﻿#include "SMLWidgets.h"
+﻿#include "stdafx.h"
+#include "SMLWidgets.h"
 
 HomeWidget::HomeWidget(QWidget* parent) {
 	//创建home界面

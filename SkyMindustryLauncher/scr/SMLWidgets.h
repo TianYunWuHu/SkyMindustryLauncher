@@ -1,16 +1,7 @@
 ﻿#ifndef _SML_SMLWIDGETS_H_
 #define _SML_SMLWIDGETS_H_
 
-#include <qwidget.h>
-#include <qlabel.h>
-#include <qpushbutton.h>
-#include <qicon.h>
-#include <qsize.h>
-#include <qscrollarea.h>
-#include <qscrollbar.h>
-#include <qlist.h>
-#include <qlineedit.h>
-#include <qsettings.h>
+#include "stdafx.h"
 #include "scr/log.h"
 #include "scr/SMLMessageBox.h"
 #include "scr/SMLThread.h"

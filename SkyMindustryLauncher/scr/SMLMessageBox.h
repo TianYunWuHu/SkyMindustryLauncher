@@ -1,18 +1,7 @@
 ﻿#ifndef _SML_SMLMESSAGEBOX_H_
 #define _SML_SMLMESSAGEBOX_H_
 
-#include <qdialog.h>
-#include <qwidget.h>
-#include <qstring.h>
-#include <qlabel.h>
-#include <qpushbutton.h>
-#include <QMouseEvent>
-#include <qgraphicseffect.h>
-#include <qframe.h>
-#include <qboxlayout.h>
-#include <QSpacerItem>
-#include <qrect.h>
-#include <qicon.h>
+#include "stdafx.h"
 #include "scr/log.h"
 
 enum MessageBoxType { Info, Warn, Error };
