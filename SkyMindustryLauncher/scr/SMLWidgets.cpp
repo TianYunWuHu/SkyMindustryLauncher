@@ -11,6 +11,7 @@ HomeWidget::HomeWidget(QWidget* parent) {
 	title = new QLabel(this);
 	LaunchBar = new QLabel(this);
 	LaunchButton = new QPushButton(this);
+	setting = new QSettings("./SML/settings.ini", QSettings::IniFormat);
 	//设置控件属性
 	TitleIcon->setGeometry(0, 0, 40, 40);
 	TitleIcon->setStyleSheet("border-style:inset;");
@@ -20,12 +21,28 @@ HomeWidget::HomeWidget(QWidget* parent) {
 	title->setGeometry(40, 0, 550, 40);
 	title->setText("首页");
 	LaunchBar->setGeometry(0, 340, 590, 50);
+	LaunchBar->setText("   当前选择：" + GetCurrentVersion());
 	LaunchBar->setStyleSheet("background-color: rgb(130, 140, 255);color: rgb(255, 255, 255);");
-	LaunchBar->setText("   当前选择：无");
 	LaunchButton->setGeometry(450, 340, 140, 50);
 	LaunchButton->setStyleSheet("QPushButton{background-color: rgba(0, 0, 0, 30);color: rgb(255, 255, 255);border-style: inset;font-size: 20px;}QPushButton:hover{background-color: rgba(0, 0, 0, 60);}QPushButton:pressed{background-color: rgba(0, 0, 0, 90);}");
 	LaunchButton->setText("启动游戏");
+	connect(LaunchButton, SIGNAL(clicked()), this, SLOT(on_LaunchButton_clicked()));
 	this->show();
+}
+
+QString HomeWidget::GetCurrentVersion() {
+	if (setting->value("/game/CurrentVersion").toString() != "") {
+		return setting->value("/game/CurrentVersion").toString();
+	}
+	else
+	{
+		return "无";
+	}
+}
+
+void HomeWidget::on_LaunchButton_clicked() {
+	GameThread = new GameT(GetCurrentVersion());
+	GameThread->start();
 }
 
 ConfigWidget::ConfigWidget(QWidget* parent) {
@@ -267,23 +284,29 @@ VersionManageWidget::VersionManageWidget(QWidget* parent, SMLWidgets* previous, 
 void VersionManageWidget::on_SaveButton_clicked() {
 	//重命名检测
 	if (VersionNameEditer->text() == "") {
-		SMLMessageBox::msgbox(this->parentWidget(), Error, "输入内容不能为空");
+		SMLMessageBox::msgbox(this->parentWidget(), Error, "输入内容不能为空（E0001）");
 	}
 	else
 	{
-		//普通版本重命名
-		QString OldName(setting->value("/game/name").toString());
-		setting->setValue("/game/name", VersionNameEditer->text());
-		delete setting;
-		QFile::rename(QDir::currentPath() + "/Game/" + OldName + "/" + OldName + ".ini", QDir::currentPath() + "/Game/" + OldName + "/" + VersionNameEditer->text() + ".ini");
-		QDir dir(QDir::currentPath() + "/Game");
-		dir.rename(QDir::currentPath() + "/Game/" + OldName, QDir::currentPath() + "/Game/" + VersionNameEditer->text());
-		setting = new QSettings("./SML/settings.ini", QSettings::IniFormat);
-		setting->setValue("/game/CurrentVersion", VersionNameEditer->text());
-		delete setting;
-		//返回配置界面
-		previous->show();
-		this->close();
+		if (VersionNameEditer->text() == "无") {
+			SMLMessageBox::msgbox(this->parentWidget(), Info, "你在开玩笑吗:P");
+		}
+		else
+		{
+			//普通版本重命名
+			QString OldName(setting->value("/game/name").toString());
+			setting->setValue("/game/name", VersionNameEditer->text());
+			delete setting;
+			QFile::rename(QDir::currentPath() + "/Game/" + OldName + "/" + OldName + ".ini", QDir::currentPath() + "/Game/" + OldName + "/" + VersionNameEditer->text() + ".ini");
+			QDir dir(QDir::currentPath() + "/Game");
+			dir.rename(QDir::currentPath() + "/Game/" + OldName, QDir::currentPath() + "/Game/" + VersionNameEditer->text());
+			setting = new QSettings("./SML/settings.ini", QSettings::IniFormat);
+			setting->setValue("/game/CurrentVersion", VersionNameEditer->text());
+			delete setting;
+			//返回配置界面
+			previous->show();
+			this->close();
+		}
 	}
 }
 

@@ -32,6 +32,12 @@ private:
 	QLabel* title;//标题栏
 	QLabel* LaunchBar;//启动栏
 	QPushButton* LaunchButton;//启动按钮
+	QSettings* setting;//启动器设置
+	GameT* GameThread;
+	QString GetCurrentVersion();//获取当前版本
+
+public slots:
+	void on_LaunchButton_clicked();
 };
 
 class ConfigWidget :

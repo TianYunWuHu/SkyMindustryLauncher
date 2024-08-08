@@ -28,6 +28,7 @@
 #include <qstyle.h>
 #include <qstyleoption.h>
 #include <qfontdatabase.h>
+#include <qprocess.h>
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1600)
 #pragma execution_character_set("utf-8")
