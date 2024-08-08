@@ -87,14 +87,34 @@ void ConfigWidget::ArrangeButton(QWidget* parent) {
 			w = 580;
 		}
 		for (int i = 0; i < VerList.size(); i++) {
+			QLabel* tempLabel = new QLabel(parent);
+			tempLabel->setGeometry(15, i * 60 + 15, 30, 30);
+			tempLabel->setScaledContents(true);
+			if (GetSelect() == i) {
+				tempLabel->setPixmap(QPixmap(":/SkyMindustryLauncher/rec/selected.png"));
+			}
+			SelectBox.append(tempLabel);
+		}
+		for (int i = 0; i < VerList.size(); i++) {
 			InfoButton* tempButton = new InfoButton(parent);
 			tempButton->setText(VerList.at(i).name);
 			tempButton->setGeometry(0, i * 60, w, 60);
-			tempButton->setStyleSheet("QPushButton{background-color: rgba(0, 0, 0, 30);color: rgb(255, 255, 255);border-style: inset;font-size: 20px;text-align: left;}QPushButton:hover{background-color: rgba(0, 0, 0, 60);}QPushButton:pressed{background-color: rgba(0, 0, 0, 90);}");
+			tempButton->setStyleSheet("QPushButton{background-color: rgba(0, 0, 0, 30);color: rgb(255, 255, 255);border-style: inset;font-size: 20px;text-align: left;border-left-width: 60px;border-left-color: rgba(0, 0, 0, 0);}QPushButton:hover{background-color: rgba(0, 0, 0, 60);}QPushButton:pressed{background-color: rgba(0, 0, 0, 90);}");
 			tempButton->setSubTitle(QString::number(VerList.at(i).ver));
 			tempButton->number = i;
 			connect(tempButton, SIGNAL(Number(int)), this, SLOT(ButtonClicked(int)));
 			ButtonBox.append(tempButton);
+		}
+		for (int i = 0; i < VerList.size(); i++) {
+			InfoButton* tempButton = new InfoButton(parent);
+			tempButton->setText("");
+			tempButton->setIcon(QIcon(":/SkyMindustryLauncher/rec/edit.png"));
+			tempButton->setIconSize(QSize(25, 25));
+			tempButton->setGeometry(w - 60, i * 60, 60, 60);
+			tempButton->setStyleSheet("QPushButton{background-color: rgba(0, 0, 0, 0);border-style: inset;}QPushButton:hover{background-color: rgba(0, 0, 0, 30);}QPushButton:pressed{background-color: rgba(0, 0, 0, 60);}");
+			tempButton->number = i;
+			connect(tempButton, SIGNAL(Number(int)), this, SLOT(EditButtonClicked(int)));
+			EditButtonBox.append(tempButton);
 		}
 		VersionListWidget->setMinimumSize(w, VerList.size() * 60);
 		InfoText->lower();
@@ -108,12 +128,23 @@ void ConfigWidget::ArrangeButton(QWidget* parent) {
 }
 
 void ConfigWidget::ButtonClicked(int i) {
+	QSettings* tempSetting = new QSettings("./SML/settings.ini", QSettings::IniFormat);
+	if (VerList.at(i).name != tempSetting->value("/game/CurrentVersion").toString()) {
+		SelectBox.at(GetSelect())->setPixmap(QPixmap(""));
+		SelectBox.at(i)->setPixmap(QPixmap(":/SkyMindustryLauncher/rec/selected.png"));
+		tempSetting->setValue("/game/CurrentVersion", VerList.at(i).name);
+	}
+}
+
+void ConfigWidget::EditButtonClicked(int i) {
 	next = new VersionManageWidget(this->parentWidget(), this, "./Game/" + VerList.at(i).name + "/" + VerList.at(i).name + ".ini");
 	this->hide();
 }
 
 void ConfigWidget::RefreshList() {
 	ButtonBox.clear();
+	EditButtonBox.clear();
+	SelectBox.clear();
 	VerList.clear();
 	delete VersionListWidget;
 	GVLT->start();
@@ -122,6 +153,15 @@ void ConfigWidget::RefreshList() {
 void ConfigWidget::showEvent(QShowEvent* e) {
 	QWidget::showEvent(e);
 	emit showed();
+}
+
+int ConfigWidget::GetSelect() {
+	for (int i = 0; i < VerList.size(); i++) {
+		QSettings* tempSetting = new QSettings("./SML/settings.ini", QSettings::IniFormat);
+		if (VerList.at(i).name == tempSetting->value("/game/CurrentVersion").toString()) {
+			return i;
+		}
+	}
 }
 
 DownloadWidget::DownloadWidget(QWidget* parent) {
@@ -231,12 +271,17 @@ void VersionManageWidget::on_SaveButton_clicked() {
 	}
 	else
 	{
+		//普通版本重命名
 		QString OldName(setting->value("/game/name").toString());
 		setting->setValue("/game/name", VersionNameEditer->text());
 		delete setting;
 		QFile::rename(QDir::currentPath() + "/Game/" + OldName + "/" + OldName + ".ini", QDir::currentPath() + "/Game/" + OldName + "/" + VersionNameEditer->text() + ".ini");
 		QDir dir(QDir::currentPath() + "/Game");
 		dir.rename(QDir::currentPath() + "/Game/" + OldName, QDir::currentPath() + "/Game/" + VersionNameEditer->text());
+		setting = new QSettings("./SML/settings.ini", QSettings::IniFormat);
+		setting->setValue("/game/CurrentVersion", VersionNameEditer->text());
+		delete setting;
+		//返回配置界面
 		previous->show();
 		this->close();
 	}

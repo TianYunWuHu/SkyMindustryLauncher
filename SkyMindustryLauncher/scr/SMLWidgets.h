@@ -47,6 +47,7 @@ public slots:
 	void GotVersionList(QList<VersionInfo>);
 	void ButtonClicked(int);
 	void RefreshList();
+	void EditButtonClicked(int);
 
 private:
 	QPushButton* TitleIcon;//图标
@@ -57,8 +58,11 @@ private:
 	GetVersionListT* GVLT;//获取版本列表线程
 	QList<VersionInfo> VerList;//版本列表
 	QList<InfoButton*> ButtonBox;//界面上的版本列表选项组
+	QList<InfoButton*> EditButtonBox;//版本编辑按钮
+	QList<QLabel*> SelectBox;//是否选中标识
 	void ArrangeButton(QWidget* parent);//根据版本列表排列选项组
 	void showEvent(QShowEvent* e) override;//重写显示事件
+	int GetSelect();//获取当前选中的版本
 
 signals:
 	void showed();

@@ -10,7 +10,7 @@ void InfoButton::paintEvent(QPaintEvent* p) {
 	QPainter painter(this);
 	painter.setFont(QFont("黑体", 10));
 	painter.setPen(QColor(105, 105, 105));
-	painter.drawText(10, 50, SubTitle);
+	painter.drawText(70, 50, SubTitle);
 }
 
 void InfoButton::setSubTitle(const QString& text) {
