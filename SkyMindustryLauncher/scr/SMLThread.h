@@ -10,6 +10,13 @@ struct VersionInfo
 	int ver;
 };
 
+struct CurrentProgress
+{
+	QString matter;//当前事项名称
+	double number;//当前事项排位
+	double percent;//当前事项进度
+};
+
 class GetVersionListT :
 	public QThread
 {
@@ -38,6 +45,11 @@ private:
 	QProcess GameProcess;
 	void run();
 	void CopyDir(QString src, QString dst);
+
+signals:
+	void ProgressNumber(double);//总事件数量
+	void progress(CurrentProgress);//每件事的进度
+	void launched();
 };
 
 #endif // !_SML_SMLTHREAD_H_

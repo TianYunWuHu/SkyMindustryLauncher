@@ -141,8 +141,12 @@ private:
 	QLabel* rate;//进度
 	QLabel* LaunchSchedule;//当前处理事项
 	GameT* GameThread;//游戏进程
+	double ProgressNumber;
 
 public slots:
 	void on_TitleIcon_clicked();
+	void GetProgressNumber(double);
+	void GetCurrentProgress(CurrentProgress);
+	void GetLaunched();
 };
 #endif // !_SML_SMLWIDGETS_H_

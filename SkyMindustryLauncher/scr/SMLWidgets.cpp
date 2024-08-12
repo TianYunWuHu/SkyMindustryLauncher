@@ -357,7 +357,7 @@ LaunchLoadingWidget::LaunchLoadingWidget(QWidget* parent, SMLWidgets* previous, 
 	ProgressBar->setStyleSheet("QProgressBar{background-color: rgba(0, 0, 0, 30);color: rgb(85, 255, 255);border: 0px}QProgressBar::chunk{background-color: rgb(110, 210, 230);}");
 	ProgressBar->setTextVisible(false);
 	ProgressBar->setValue(50);
-	rate->setGeometry(540, 360, 50, 20);
+	rate->setGeometry(535, 360, 50, 20);
 	rate->setStyleSheet("color: rgb(120, 120, 120);");
 	rate->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
 	LaunchSchedule->setGeometry(0, 360, 250, 20);
@@ -365,10 +365,30 @@ LaunchLoadingWidget::LaunchLoadingWidget(QWidget* parent, SMLWidgets* previous, 
 	//启动游戏进程
 	GameThread = new GameT(GameName);
 	GameThread->start();
+	//连接游戏进程
+	qRegisterMetaType<CurrentProgress>("CurrentProgress");
+	connect(GameThread, SIGNAL(ProgressNumber(double)), this, SLOT(GetProgressNumber(double)));
+	connect(GameThread, SIGNAL(progress(CurrentProgress)), this, SLOT(GetCurrentProgress(CurrentProgress)));
+	connect(GameThread, SIGNAL(launched()), this, SLOT(GetLaunched()));
 	this->show();
 }
 
 void LaunchLoadingWidget::on_TitleIcon_clicked() {
+	previous->show();
+	this->close();
+}
+
+void LaunchLoadingWidget::GetProgressNumber(double i) {
+	ProgressNumber = i;
+}
+
+void LaunchLoadingWidget::GetCurrentProgress(CurrentProgress c) {
+	ProgressBar->setValue(qRound((1 / ProgressNumber * 100 * c.number) - ((100 - c.percent) / (1 / ProgressNumber * 100))));
+	rate->setText(QString::number(ProgressBar->value()) + "%");
+	LaunchSchedule->setText(c.matter + "(" + QString::number(c.number) + "/" + QString::number(ProgressNumber) + ")");
+}
+
+void LaunchLoadingWidget::GetLaunched() {
 	previous->show();
 	this->close();
 }
