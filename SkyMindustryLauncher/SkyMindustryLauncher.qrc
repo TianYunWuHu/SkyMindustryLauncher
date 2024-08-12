@@ -13,5 +13,6 @@
         <file>rec/back.png</file>
         <file>rec/edit.png</file>
         <file>rec/selected.png</file>
+        <file>rec/launch.png</file>
     </qresource>
 </RCC>

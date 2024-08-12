@@ -41,8 +41,15 @@ QString HomeWidget::GetCurrentVersion() {
 }
 
 void HomeWidget::on_LaunchButton_clicked() {
-	GameThread = new GameT(GetCurrentVersion());
-	GameThread->start();
+	if (GetCurrentVersion() != "无") {
+		next = new LaunchLoadingWidget(this->parentWidget(), this, GetCurrentVersion());
+		next->show();
+		this->hide();
+	}
+	else
+	{
+		SMLMessageBox::msgbox(this->parentWidget(), Info, "当前版本不可启动");
+	}
 }
 
 ConfigWidget::ConfigWidget(QWidget* parent) {
@@ -311,6 +318,57 @@ void VersionManageWidget::on_SaveButton_clicked() {
 }
 
 void VersionManageWidget::on_TitleIcon_clicked() {
+	previous->show();
+	this->close();
+}
+
+LaunchLoadingWidget::LaunchLoadingWidget(QWidget* parent, SMLWidgets* previous, QString GameName) {
+	//变量初始化
+	this->previous = previous;
+	//创建启动时加载界面
+	this->setParent(parent);
+	this->setGeometry(50, 40, 590, 390);
+	this->setStyleSheet("background-color: rgba(0, 0, 0, 0)");
+	//生成控件
+	TitleIcon = new QPushButton(this);
+	title = new QLabel(this);
+	LaunchIcon = new QLabel(this);
+	LaunchTitle = new QLabel(this);
+	ProgressBar = new QProgressBar(this);
+	rate = new QLabel(this);
+	LaunchSchedule = new QLabel(this);
+	//设置控件属性
+	TitleIcon->setGeometry(0, 0, 40, 40);
+	TitleIcon->setStyleSheet("QPushButton{background-color: rgb(255, 255, 255);color: rgb(255, 255, 255);border-style: inset;}QPushButton:hover{background-color: rgb(225, 225, 225);}QPushButton:pressed{background-color: rgb(195, 195, 195);}");
+	TitleIcon->setIcon(QIcon(":/SkyMindustryLauncher/rec/back.png"));
+	TitleIcon->setIconSize(QSize(20, 20));
+	connect(TitleIcon, SIGNAL(clicked()), this, SLOT(on_TitleIcon_clicked()));
+	title->setGeometry(40, 0, 550, 40);
+	title->setStyleSheet("background-color: rgb(255, 255, 255);");
+	title->setText("启动游戏-" + GameName);
+	LaunchIcon->setGeometry(245, 140, 100, 100);
+	LaunchIcon->setPixmap(QPixmap(":/SkyMindustryLauncher/rec/launch.png"));
+	LaunchIcon->setScaledContents(true);
+	LaunchTitle->setGeometry(0, 240, 590, 40);
+	LaunchTitle->setStyleSheet("font-size: 20px;");
+	LaunchTitle->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+	LaunchTitle->setText("正在启动：" + GameName);
+	ProgressBar->setGeometry(0, 380, 590, 10);
+	ProgressBar->setStyleSheet("QProgressBar{background-color: rgba(0, 0, 0, 30);color: rgb(85, 255, 255);border: 0px}QProgressBar::chunk{background-color: rgb(110, 210, 230);}");
+	ProgressBar->setTextVisible(false);
+	ProgressBar->setValue(50);
+	rate->setGeometry(540, 360, 50, 20);
+	rate->setStyleSheet("color: rgb(120, 120, 120);");
+	rate->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+	LaunchSchedule->setGeometry(0, 360, 250, 20);
+	LaunchSchedule->setStyleSheet("color: rgb(120, 120, 120);");
+	//启动游戏进程
+	GameThread = new GameT(GameName);
+	GameThread->start();
+	this->show();
+}
+
+void LaunchLoadingWidget::on_TitleIcon_clicked() {
 	previous->show();
 	this->close();
 }

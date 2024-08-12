@@ -29,15 +29,12 @@ GameT::GameT(QString name) {
 void GameT::run() {
 	QString DataPath(QDir::homePath() + "/AppData/Roaming/Mindustry");
 	CopyDir(dir.absolutePath() + "/Game/" + GameName + "/Mindustry", DataPath);
-	if (GameName != "无") {
-		QString GamePath('"' + dir.absolutePath() + "/Game/" + GameName + "/" + "Mindustry.jar" + '"');
-		logger::log(debug, "java -jar ");
-		GameProcess.start("java -jar " + GamePath);
-		GameProcess.waitForFinished();
-		QThread::msleep(1000);
-		CopyDir(DataPath, dir.absolutePath() + "/Game/" + GameName + "/Mindustry");
-		QDir(DataPath).removeRecursively();
-	}
+	QString GamePath('"' + dir.absolutePath() + "/Game/" + GameName + "/" + "Mindustry.jar" + '"');
+	GameProcess.start("java -jar " + GamePath);
+	GameProcess.waitForFinished();
+	QThread::msleep(1000);
+	CopyDir(DataPath, dir.absolutePath() + "/Game/" + GameName + "/Mindustry");
+	QDir(DataPath).removeRecursively();
 }
 
 void GameT::CopyDir(QString src, QString dst) {

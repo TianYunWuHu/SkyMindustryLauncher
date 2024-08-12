@@ -33,7 +33,6 @@ private:
 	QLabel* LaunchBar;//启动栏
 	QPushButton* LaunchButton;//启动按钮
 	QSettings* setting;//启动器设置
-	GameT* GameThread;
 	QString GetCurrentVersion();//获取当前版本
 
 public slots:
@@ -123,6 +122,27 @@ private:
 
 public slots:
 	void on_SaveButton_clicked();
+	void on_TitleIcon_clicked();
+};
+
+class LaunchLoadingWidget :
+	public SMLWidgets {
+
+	Q_OBJECT
+
+public:
+	LaunchLoadingWidget(QWidget* parent, SMLWidgets* previous, QString GameName);
+private:
+	QLabel* title;
+	QPushButton* TitleIcon;
+	QLabel* LaunchIcon;//启动图标
+	QLabel* LaunchTitle;//具体启动信息
+	QProgressBar* ProgressBar;//进度条
+	QLabel* rate;//进度
+	QLabel* LaunchSchedule;//当前处理事项
+	GameT* GameThread;//游戏进程
+
+public slots:
 	void on_TitleIcon_clicked();
 };
 #endif // !_SML_SMLWIDGETS_H_
