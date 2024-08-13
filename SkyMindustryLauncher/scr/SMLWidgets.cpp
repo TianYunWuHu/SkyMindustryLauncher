@@ -41,15 +41,28 @@ QString HomeWidget::GetCurrentVersion() {
 }
 
 void HomeWidget::on_LaunchButton_clicked() {
-	if (GetCurrentVersion() != "无") {
-		next = new LaunchLoadingWidget(this->parentWidget(), this, GetCurrentVersion());
-		next->show();
-		this->hide();
+	if (LaunchButton->text() == "启动游戏") {
+		if (GetCurrentVersion() != "无") {
+			next = new LaunchLoadingWidget(this->parentWidget(), this, GetCurrentVersion());
+			next->show();
+			this->hide();
+		}
+		else
+		{
+			SMLMessageBox::msgbox(this->parentWidget(), Info, "当前版本不可启动");
+		}
 	}
-	else
-	{
-		SMLMessageBox::msgbox(this->parentWidget(), Info, "当前版本不可启动");
+	else if (LaunchButton->text() == "停止游戏") {
+		if (SMLMessageBox::msgbox(this->parentWidget(), Warn, "强制停止游戏可能会导致存档丢失，是否继续？") == 1) {
+			connect(this, SIGNAL(ForceQuit()), GameMain, SLOT(ForceQuit()));
+			emit ForceQuit();
+			LaunchButton->setText("启动游戏");
+		}
 	}
+}
+
+void HomeWidget::launched() {
+	LaunchButton->setText("停止游戏");
 }
 
 ConfigWidget::ConfigWidget(QWidget* parent) {
@@ -363,13 +376,14 @@ LaunchLoadingWidget::LaunchLoadingWidget(QWidget* parent, SMLWidgets* previous, 
 	LaunchSchedule->setGeometry(0, 360, 250, 20);
 	LaunchSchedule->setStyleSheet("color: rgb(120, 120, 120);");
 	//启动游戏进程
-	GameThread = new GameT(GameName);
-	GameThread->start();
+	GameMain = new GameT(GameName);
+	GameMain->start();
 	//连接游戏进程
 	qRegisterMetaType<CurrentProgress>("CurrentProgress");
-	connect(GameThread, SIGNAL(ProgressNumber(double)), this, SLOT(GetProgressNumber(double)));
-	connect(GameThread, SIGNAL(progress(CurrentProgress)), this, SLOT(GetCurrentProgress(CurrentProgress)));
-	connect(GameThread, SIGNAL(launched()), this, SLOT(GetLaunched()));
+	connect(GameMain, SIGNAL(ProgressNumber(double)), this, SLOT(GetProgressNumber(double)));
+	connect(GameMain, SIGNAL(progress(CurrentProgress)), this, SLOT(GetCurrentProgress(CurrentProgress)));
+	connect(GameMain, SIGNAL(launched()), this, SLOT(GetLaunched()));
+	connect(GameMain, SIGNAL(finished()), parent->parent()->parent(), SLOT(GameFinished()));
 	this->show();
 }
 
@@ -389,6 +403,8 @@ void LaunchLoadingWidget::GetCurrentProgress(CurrentProgress c) {
 }
 
 void LaunchLoadingWidget::GetLaunched() {
+	connect(this, SIGNAL(GameLaunched()), previous, SLOT(launched()));
+	emit GameLaunched();
 	previous->show();
 	this->close();
 }

@@ -98,6 +98,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="scr\global.cpp" />
     <ClCompile Include="scr\SMLCustomControl.cpp" />
     <ClCompile Include="scr\SMLWidgets.cpp" />
     <ClCompile Include="scr\SMLMessageBox.cpp" />
@@ -114,6 +115,7 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="scr\global.h" />
     <ClInclude Include="scr\log.h" />
     <ClInclude Include="stdafx.h" />
     <QtMoc Include="scr\SMLCustomControl.h" />

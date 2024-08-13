@@ -48,6 +48,8 @@ void GameT::run() {
 	progress3.number = 3;
 	progress3.percent = 100;
 	emit progress(progress3);
+	QSettings setting("./SML/settings.ini", QSettings::IniFormat);
+	setting.setValue("/game/isRunning", true);
 	GameProcess.start("java -jar " + GamePath);
 
 	CurrentProgress progress4;
@@ -57,7 +59,8 @@ void GameT::run() {
 	emit progress(progress4);
 	while (FindWindowEx(NULL, NULL, NULL, L"Mindustry") == NULL);
 	emit launched();
-	GameProcess.waitForFinished();
+
+	while (isProcessExist("java.exe"));
 
 	QThread::msleep(1000);
 	CopyDir(DataPath, dir.absolutePath() + "/Game/" + GameName + "/Mindustry");
@@ -87,4 +90,21 @@ void GameT::CopyDir(QString src, QString dst) {
 		QFile file(info.filePath());
 		file.copy(dst + "/" + info.fileName());
 	}
+}
+
+bool GameT::isProcessExist(QString ProcessName) {
+	QProcess process;
+	process.start("tasklist");
+	process.waitForFinished();
+
+	QByteArray result = process.readAllStandardOutput();
+	QString str = result;
+	if (str.contains(ProcessName))
+		return true;
+	else
+		return false;
+}
+
+void GameT::ForceQuit() {
+	QProcess::execute("taskkill /IM java.exe /F");
 }

@@ -31,6 +31,8 @@
 #include <qprocess.h>
 #include <qprogressbar.h>
 #include <Windows.h>
+#include <qeventloop.h>
+#include "scr/global.h"
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1600)
 #pragma execution_character_set("utf-8")

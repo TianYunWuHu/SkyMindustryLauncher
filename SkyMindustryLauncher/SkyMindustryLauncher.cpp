@@ -62,6 +62,9 @@ void SkyMindustryLauncher::EnvironmentINIT() {
 		dir.mkdir("Game");
 	}
 }
+void SkyMindustryLauncher::SettingsINIT() {
+
+}
 
 void SkyMindustryLauncher::on_MiniButton_clicked() {
 	this->showMinimized();
@@ -85,4 +88,11 @@ void SkyMindustryLauncher::on_DownloadButton_clicked() {
 void SkyMindustryLauncher::on_SettingsButton_clicked() {
 	delete CurrentWidget;
 	CurrentWidget = new SettingsWidget(ui.MainFrame);
+}
+
+void SkyMindustryLauncher::GameFinished() {
+	delete GameMain;
+	GameMain = nullptr;
+	QSettings setting("./SML/settings.ini", QSettings::IniFormat);
+	setting.setValue("/game/isRunning", false);
 }

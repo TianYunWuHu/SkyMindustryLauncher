@@ -43,8 +43,13 @@ private:
 	QString GameName;
 	QDir dir;
 	QProcess GameProcess;
+	bool isCanRun = true;
 	void run();
 	void CopyDir(QString src, QString dst);
+	bool isProcessExist(QString ProcessName);
+
+public slots:
+	void ForceQuit();
 
 signals:
 	void ProgressNumber(double);//总事件数量

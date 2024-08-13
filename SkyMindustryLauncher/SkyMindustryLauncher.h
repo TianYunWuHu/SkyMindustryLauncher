@@ -24,6 +24,7 @@ public slots:
 	void on_ConfigButton_clicked();
 	void on_DownloadButton_clicked();
 	void on_SettingsButton_clicked();
+	void GameFinished();
 
 private:
 	Ui::SkyMindustryLauncherClass ui;
@@ -34,5 +35,6 @@ private:
 	QDir dir;
 
 	void LessWindowsHint();//无边框
-	void EnvironmentINIT();
+	void EnvironmentINIT();//环境初始化
+	void SettingsINIT();//设置初始化
 };

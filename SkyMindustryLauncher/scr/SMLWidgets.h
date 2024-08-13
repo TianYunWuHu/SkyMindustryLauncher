@@ -37,6 +37,10 @@ private:
 
 public slots:
 	void on_LaunchButton_clicked();
+	void launched();
+
+signals:
+	void ForceQuit();
 };
 
 class ConfigWidget :
@@ -140,7 +144,6 @@ private:
 	QProgressBar* ProgressBar;//进度条
 	QLabel* rate;//进度
 	QLabel* LaunchSchedule;//当前处理事项
-	GameT* GameThread;//游戏进程
 	double ProgressNumber;
 
 public slots:
@@ -148,5 +151,8 @@ public slots:
 	void GetProgressNumber(double);
 	void GetCurrentProgress(CurrentProgress);
 	void GetLaunched();
+
+signals:
+	void GameLaunched();
 };
 #endif // !_SML_SMLWIDGETS_H_
