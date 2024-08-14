@@ -9,5 +9,7 @@
 
 //全局变量
 extern GameT* GameMain;
+extern bool isGameCanLaunch;
+extern QMutex MUTEX;
 
 #endif // !_SML_GLOBAL_H_

@@ -36,33 +36,51 @@ void GameT::run() {
 	QString DataPath(QDir::homePath() + "/AppData/Roaming/Mindustry");
 	CopyDir(dir.absolutePath() + "/Game/" + GameName + "/Mindustry", DataPath);
 
-	CurrentProgress progress2;
-	progress2.matter = "处理java";
-	progress2.number = 2;
-	progress2.percent = 100;
-	emit progress(progress2);
-	QString GamePath('"' + dir.absolutePath() + "/Game/" + GameName + "/" + "Mindustry.jar" + '"');
+	MUTEX.lock();
+	if (isGameCanLaunch) {
+		MUTEX.unlock();
 
-	CurrentProgress progress3;
-	progress3.matter = "启动游戏";
-	progress3.number = 3;
-	progress3.percent = 100;
-	emit progress(progress3);
-	QSettings setting("./SML/settings.ini", QSettings::IniFormat);
-	setting.setValue("/game/isRunning", true);
-	GameProcess.start("java -jar " + GamePath);
+		CurrentProgress progress2;
+		progress2.matter = "处理java";
+		progress2.number = 2;
+		progress2.percent = 100;
+		emit progress(progress2);
+		QString GamePath('"' + dir.absolutePath() + "/Game/" + GameName + "/" + "Mindustry.jar" + '"');
 
-	CurrentProgress progress4;
-	progress4.matter = "等待游戏窗口出现";
-	progress4.number = 4;
-	progress4.percent = 100;
-	emit progress(progress4);
-	while (FindWindowEx(NULL, NULL, NULL, L"Mindustry") == NULL);
-	emit launched();
+		MUTEX.lock();
+		if (isGameCanLaunch) {
+			MUTEX.unlock();
 
-	while (isProcessExist("java.exe"));
+			CurrentProgress progress3;
+			progress3.matter = "启动游戏";
+			progress3.number = 3;
+			progress3.percent = 100;
+			emit progress(progress3);
+			QSettings setting("./SML/settings.ini", QSettings::IniFormat);
+			setting.setValue("/game/isRunning", true);
+			GameProcess.start("java -jar " + GamePath);
 
-	QThread::msleep(1000);
+			CurrentProgress progress4;
+			progress4.matter = "等待游戏窗口出现";
+			progress4.number = 4;
+			progress4.percent = 100;
+			emit progress(progress4);
+			while (FindWindowEx(NULL, NULL, NULL, L"Mindustry") == NULL);
+			emit launched();
+
+			while (isProcessExist("java.exe"));
+
+			QThread::msleep(1000);
+		}
+		else
+		{
+			MUTEX.unlock();
+		}
+	}
+	else
+	{
+		MUTEX.unlock();
+	}
 	CopyDir(DataPath, dir.absolutePath() + "/Game/" + GameName + "/Mindustry");
 	QDir(DataPath).removeRecursively();
 }

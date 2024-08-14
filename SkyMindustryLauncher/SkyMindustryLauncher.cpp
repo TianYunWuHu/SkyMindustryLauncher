@@ -95,4 +95,5 @@ void SkyMindustryLauncher::GameFinished() {
 	GameMain = nullptr;
 	QSettings setting("./SML/settings.ini", QSettings::IniFormat);
 	setting.setValue("/game/isRunning", false);
+	emit GameFinish();
 }

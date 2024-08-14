@@ -25,7 +25,7 @@ HomeWidget::HomeWidget(QWidget* parent) {
 	LaunchBar->setStyleSheet("background-color: rgb(130, 140, 255);color: rgb(255, 255, 255);");
 	LaunchButton->setGeometry(450, 340, 140, 50);
 	LaunchButton->setStyleSheet("QPushButton{background-color: rgba(0, 0, 0, 30);color: rgb(255, 255, 255);border-style: inset;font-size: 20px;}QPushButton:hover{background-color: rgba(0, 0, 0, 60);}QPushButton:pressed{background-color: rgba(0, 0, 0, 90);}");
-	LaunchButton->setText("启动游戏");
+	LaunchButton->setText(setting->value("/game/isRunning").toBool() ? "停止游戏" : "启动游戏");
 	connect(LaunchButton, SIGNAL(clicked()), this, SLOT(on_LaunchButton_clicked()));
 	this->show();
 }
@@ -43,6 +43,8 @@ QString HomeWidget::GetCurrentVersion() {
 void HomeWidget::on_LaunchButton_clicked() {
 	if (LaunchButton->text() == "启动游戏") {
 		if (GetCurrentVersion() != "无") {
+			connect(this->parent()->parent()->parent(), SIGNAL(GameFinish()), this, SLOT(GetGameFinished()));
+			isGameCanLaunch = true;
 			next = new LaunchLoadingWidget(this->parentWidget(), this, GetCurrentVersion());
 			next->show();
 			this->hide();
@@ -56,13 +58,16 @@ void HomeWidget::on_LaunchButton_clicked() {
 		if (SMLMessageBox::msgbox(this->parentWidget(), Warn, "强制停止游戏可能会导致存档丢失，是否继续？") == 1) {
 			connect(this, SIGNAL(ForceQuit()), GameMain, SLOT(ForceQuit()));
 			emit ForceQuit();
-			LaunchButton->setText("启动游戏");
 		}
 	}
 }
 
 void HomeWidget::launched() {
 	LaunchButton->setText("停止游戏");
+}
+
+void HomeWidget::GetGameFinished() {
+	LaunchButton->setText("启动游戏");
 }
 
 ConfigWidget::ConfigWidget(QWidget* parent) {
@@ -373,8 +378,10 @@ LaunchLoadingWidget::LaunchLoadingWidget(QWidget* parent, SMLWidgets* previous, 
 	rate->setGeometry(535, 360, 50, 20);
 	rate->setStyleSheet("color: rgb(120, 120, 120);");
 	rate->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+	rate->setText("0%");
 	LaunchSchedule->setGeometry(0, 360, 250, 20);
 	LaunchSchedule->setStyleSheet("color: rgb(120, 120, 120);");
+	LaunchSchedule->setText("准备工作...");
 	//启动游戏进程
 	GameMain = new GameT(GameName);
 	GameMain->start();
@@ -388,6 +395,9 @@ LaunchLoadingWidget::LaunchLoadingWidget(QWidget* parent, SMLWidgets* previous, 
 }
 
 void LaunchLoadingWidget::on_TitleIcon_clicked() {
+	MUTEX.lock();
+	isGameCanLaunch = false;
+	MUTEX.unlock();
 	previous->show();
 	this->close();
 }

@@ -32,6 +32,7 @@
 #include <qprogressbar.h>
 #include <Windows.h>
 #include <qeventloop.h>
+#include <qmutex.h>
 #include "scr/global.h"
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1600)

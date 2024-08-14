@@ -38,6 +38,7 @@ private:
 public slots:
 	void on_LaunchButton_clicked();
 	void launched();
+	void GetGameFinished();
 
 signals:
 	void ForceQuit();
