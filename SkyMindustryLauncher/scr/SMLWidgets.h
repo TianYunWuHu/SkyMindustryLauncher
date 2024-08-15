@@ -13,6 +13,9 @@ class SMLWidgets :
 
 	Q_OBJECT
 
+public:
+	~SMLWidgets();
+
 protected:
 	SMLWidgets* previous = nullptr;//上一个界面
 	SMLWidgets* next = nullptr;//下一个界面
@@ -50,7 +53,6 @@ class ConfigWidget :
 	Q_OBJECT
 
 public:
-	~ConfigWidget();
 	ConfigWidget(QWidget* parent);
 
 public slots:
@@ -87,10 +89,24 @@ public:
 	DownloadWidget(QWidget* parent);
 
 private:
-	QPushButton* TitleIcon;
-	QLabel* title;
-	QScrollArea* VersionList;
-	QWidget* VersionListWidget;
+	QPushButton* TitleIcon;//图标
+	QLabel* title;//标题栏
+	QScrollArea* VersionList;//滚动区域
+	QWidget* VersionListWidget;//滚动区内的区域
+	QLabel* InfoText;//提示标语
+	GetOnlineGameVersionT* GOGVT;//获取版本列表线程
+	QList<VersionInfo> VerList;//版本列表
+	QList<InfoButton*> ButtonBox;//界面上的版本列表选项组
+	void ArrangeButton(QWidget* parent);//根据版本列表排列选项组
+	void showEvent(QShowEvent* e) override;//重写显示事件
+
+public slots:
+	void GotVersionList(QList<VersionInfo>);
+	void ButtonClicked(int);
+	void RefreshList();
+
+signals:
+	void showed();
 };
 
 class SettingsWidget :
@@ -155,5 +171,25 @@ public slots:
 
 signals:
 	void GameLaunched();
+};
+
+class DownloadManageWidget :
+	public SMLWidgets {
+
+	Q_OBJECT
+
+public:
+	DownloadManageWidget(QWidget* parent, SMLWidgets* previous, QString Version);
+
+private:
+	QLabel* title;
+	QPushButton* TitleIcon;
+	QLabel* VersionNameLabel;//命名标签
+	QLineEdit* VersionNameEditer;//命名编辑框
+	QPushButton* SaveButton;//保存按钮
+
+public slots:
+	void on_SaveButton_clicked();
+	void on_TitleIcon_clicked();
 };
 #endif // !_SML_SMLWIDGETS_H_

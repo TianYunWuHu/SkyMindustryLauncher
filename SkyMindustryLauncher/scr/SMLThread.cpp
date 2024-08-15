@@ -12,7 +12,7 @@ void GetVersionListT::run() {
 		if (QFileInfo(FileInfo.absoluteFilePath() + "/" + QDir(FileInfo.absoluteFilePath()).dirName() + ".ini").isFile()) {
 			setting = new QSettings(FileInfo.absoluteFilePath() + "/" + QDir(FileInfo.absoluteFilePath()).dirName() + ".ini", QSettings::IniFormat);
 			VerInfo.name = setting->value("/game/name").toString();
-			VerInfo.ver = setting->value("/game/version").toInt();
+			VerInfo.ver = setting->value("/game/version").toString();
 			VerList.append(VerInfo);
 			delete setting;
 		}
@@ -125,4 +125,44 @@ bool GameT::isProcessExist(QString ProcessName) {
 
 void GameT::ForceQuit() {
 	QProcess::execute("taskkill /IM java.exe /F");
+}
+
+void GetOnlineGameVersionT::run() {
+	logger::log(debug, "%q", QString::number(QSslSocket::supportsSsl()));
+	logger::log(debug, "%q", QSslSocket::sslLibraryBuildVersionString());
+	VerList.clear();
+	QUrl url = QUrl::fromUserInput("https://api.github.com/repos/Anuken/Mindustry/releases");
+	QNetworkAccessManager manager;
+	QNetworkRequest request(url);
+	request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+	QNetworkReply* reply = manager.get(request);
+	QEventLoop loop;
+	connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
+	QTimer::singleShot(10000, &loop, &QEventLoop::quit);
+	loop.exec();
+	QByteArray array;
+	if (reply->isFinished())
+	{
+		if (reply->error() == QNetworkReply::NoError)
+		{
+			array = reply->readAll();
+			QJsonDocument doc = QJsonDocument::fromJson(array);
+			QJsonArray JsonArray = doc.array();
+			for (int i = 0; i < JsonArray.size(); i++) {
+				QJsonObject object = JsonArray.at(i).toObject();
+				VersionInfo VerInfo;
+				VerInfo.name = "";
+				VerInfo.ver = object.value("tag_name").toString();
+				QJsonArray assets = object.value("assets").toArray();
+				QJsonObject download = assets.at(0).toObject();
+				VerInfo.DownloadURL = download.value("browser_download_url").toString().toUtf8();
+				VerList.append(VerInfo);
+			}
+			emit GetVersionList(VerList);
+		}
+	}
+	else
+	{
+		disconnect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
+	}
 }

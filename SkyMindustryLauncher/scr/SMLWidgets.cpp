@@ -1,6 +1,13 @@
 ﻿#include "stdafx.h"
 #include "SMLWidgets.h"
 
+SMLWidgets::~SMLWidgets() {
+	delete next;
+	delete previous;
+	next = nullptr;
+	previous = nullptr;
+}
+
 HomeWidget::HomeWidget(QWidget* parent) {
 	//创建home界面
 	this->setParent(parent);
@@ -101,15 +108,9 @@ ConfigWidget::ConfigWidget(QWidget* parent) {
 	//设置获取版本列表线程
 	qRegisterMetaType<QList<VersionInfo>>("QList<VersionInfo>");
 	connect(GVLT, SIGNAL(GetVersionList(QList<VersionInfo>)), this, SLOT(GotVersionList(QList<VersionInfo>)));
-	//GVLT->start();
 	//连接刷新函数
 	connect(this, SIGNAL(showed()), this, SLOT(RefreshList()));
 	this->show();
-}
-
-ConfigWidget::~ConfigWidget() {
-	delete next;
-	delete previous;
 }
 
 void ConfigWidget::GotVersionList(QList<VersionInfo> verList) {
@@ -142,7 +143,7 @@ void ConfigWidget::ArrangeButton(QWidget* parent) {
 			tempButton->setText(VerList.at(i).name);
 			tempButton->setGeometry(0, i * 60, w, 60);
 			tempButton->setStyleSheet("QPushButton{background-color: rgba(0, 0, 0, 30);color: rgb(255, 255, 255);border-style: inset;font-size: 20px;text-align: left;border-left-width: 60px;border-left-color: rgba(0, 0, 0, 0);}QPushButton:hover{background-color: rgba(0, 0, 0, 60);}QPushButton:pressed{background-color: rgba(0, 0, 0, 90);}");
-			tempButton->setSubTitle(QString::number(VerList.at(i).ver));
+			tempButton->setSubTitle(VerList.at(i).ver);
 			tempButton->number = i;
 			connect(tempButton, SIGNAL(Number(int)), this, SLOT(ButtonClicked(int)));
 			ButtonBox.append(tempButton);
@@ -215,7 +216,8 @@ DownloadWidget::DownloadWidget(QWidget* parent) {
 	TitleIcon = new QPushButton(this);
 	title = new QLabel(this);
 	VersionList = new QScrollArea(this);
-	VersionListWidget = new QWidget(VersionList);
+	InfoText = new QLabel(this);
+	GOGVT = new GetOnlineGameVersionT();
 	//设置控件属性
 	TitleIcon->setGeometry(0, 0, 40, 40);
 	TitleIcon->setStyleSheet("border-style:inset;background-color: rgb(255, 255, 255);");
@@ -225,15 +227,79 @@ DownloadWidget::DownloadWidget(QWidget* parent) {
 	title->setGeometry(40, 0, 550, 40);
 	title->setStyleSheet("background-color: rgb(255, 255, 255);");
 	title->setText("下载");
-	VersionListWidget->setGeometry(0, 0, 580, 400);
-	VersionListWidget->setMinimumSize(QSize(580, 400));
-	VersionListWidget->setStyleSheet("background-color: rgba(0, 0, 0, 0);");
 	VersionList->setGeometry(0, 40, 590, 350);
 	VersionList->setStyleSheet("border: none;");
 	VersionList->verticalScrollBar()->setStyleSheet("QScrollBar:vertical{width: 10px;padding-top: 0px;padding-bottom: 0px;}QScrollBar::handle:vertical{background-color: rgb(140, 140, 140)}QScrollBar::handle:vertical:hover{background-color: rgb(90, 90, 90)}QScrollBar::add-line:vertical{height: 0px;width: 10px;subcontrol-position: bottom;}QScrollBar::sub-line:vertical{height: 0px;width: 10px;subcontrol-position: top;}QScrollBar::add-page:vertical,QScrollBar::sub-page:vertical{background-color: rgba(0, 0, 0, 0);}");
-	VersionList->setWidget(VersionListWidget);
 	VersionList->setWidgetResizable(true);
+	InfoText->setGeometry(0, 155, 590, 40);
+	InfoText->setStyleSheet("background-color: rgba(255, 255, 255, 0);");
+	InfoText->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+	InfoText->setText("正在加载游戏版本列表...");
+	//设置获取版本列表线程
+	qRegisterMetaType<QList<VersionInfo>>("QList<VersionInfo>");
+	connect(GOGVT, SIGNAL(GetVersionList(QList<VersionInfo>)), this, SLOT(GotVersionList(QList<VersionInfo>)));
+	//连接刷新函数
+	connect(this, SIGNAL(showed()), this, SLOT(RefreshList()));
 	this->show();
+}
+
+void DownloadWidget::showEvent(QShowEvent* e) {
+	QWidget::showEvent(e);
+	emit showed();
+}
+
+void DownloadWidget::GotVersionList(QList<VersionInfo> verList) {
+	this->VerList = verList;
+	VersionListWidget = new QWidget(VersionList);
+	VersionListWidget->setGeometry(0, 0, 590, 0);
+	VersionListWidget->setStyleSheet("background-color: rgba(0, 0, 0, 0);");
+	ArrangeButton(VersionListWidget);
+	VersionList->setWidget(VersionListWidget);
+	VersionListWidget->show();
+}
+
+void DownloadWidget::ArrangeButton(QWidget* parent) {
+	if (VerList.size() != 0) {
+		int w = 590;
+		if (VerList.size() > 5) {
+			w = 580;
+		}
+		for (int i = 0; i < VerList.size(); i++) {
+			QLabel* tempLabel = new QLabel(parent);
+			tempLabel->setGeometry(w - 45, i * 60 + 15, 30, 30);
+			tempLabel->setScaledContents(true);
+			tempLabel->setPixmap(QPixmap(":/SkyMindustryLauncher/rec/go.png"));
+		}
+		for (int i = 0; i < VerList.size(); i++) {
+			InfoButton* tempButton = new InfoButton(parent);
+			tempButton->setText(VerList.at(i).ver);
+			tempButton->setGeometry(0, i * 60, w, 60);
+			tempButton->setStyleSheet("QPushButton{background-color: rgba(0, 0, 0, 30);color: rgb(255, 255, 255);border-style: inset;font-size: 20px;text-align: left;}QPushButton:hover{background-color: rgba(0, 0, 0, 60);}QPushButton:pressed{background-color: rgba(0, 0, 0, 90);}");
+			tempButton->number = i;
+			connect(tempButton, SIGNAL(Number(int)), this, SLOT(ButtonClicked(int)));
+			ButtonBox.append(tempButton);
+		}
+		VersionListWidget->setMinimumSize(w, VerList.size() * 60);
+		InfoText->lower();
+		InfoText->setText("");
+	}
+	else
+	{
+		InfoText->raise();
+		InfoText->setText("获取版本失败,请检查网络");
+	}
+}
+
+void DownloadWidget::ButtonClicked(int i) {
+	next = new DownloadManageWidget(this->parentWidget(), this, ButtonBox.at(i)->text());
+	this->hide();
+}
+
+void DownloadWidget::RefreshList() {
+	ButtonBox.clear();
+	VerList.clear();
+	delete VersionListWidget;
+	GOGVT->start();
 }
 
 SettingsWidget::SettingsWidget(QWidget* parent) {
@@ -415,6 +481,57 @@ void LaunchLoadingWidget::GetCurrentProgress(CurrentProgress c) {
 void LaunchLoadingWidget::GetLaunched() {
 	connect(this, SIGNAL(GameLaunched()), previous, SLOT(launched()));
 	emit GameLaunched();
+	previous->show();
+	this->close();
+}
+
+DownloadManageWidget::DownloadManageWidget(QWidget* parent, SMLWidgets* previous, QString version) {
+	//变量初始化
+	this->previous = previous;
+	//创建下载信息界面
+	this->setParent(parent);
+	this->setGeometry(50, 40, 590, 390);
+	this->setStyleSheet("background-color: rgba(0, 0, 0, 0)");
+	//生成控件
+	TitleIcon = new QPushButton(this);
+	title = new QLabel(this);
+	VersionNameLabel = new QLabel(this);
+	VersionNameEditer = new QLineEdit(this);
+	SaveButton = new QPushButton(this);
+	//设置控件属性
+	TitleIcon->setGeometry(0, 0, 40, 40);
+	TitleIcon->setStyleSheet("QPushButton{background-color: rgb(255, 255, 255);color: rgb(255, 255, 255);border-style: inset;font-size: 20px;}QPushButton:hover{background-color: rgb(225, 225, 225);}QPushButton:pressed{background-color: rgb(195, 195, 195);}");
+	TitleIcon->setIcon(QIcon(":/SkyMindustryLauncher/rec/back.png"));
+	TitleIcon->setIconSize(QSize(20, 20));
+	connect(TitleIcon, SIGNAL(clicked()), this, SLOT(on_TitleIcon_clicked()));
+	title->setGeometry(40, 0, 550, 40);
+	title->setStyleSheet("background-color: rgb(255, 255, 255);");
+	title->setText("下载游戏-" + version);
+	VersionNameLabel->setGeometry(40, 60, 90, 30);
+	VersionNameLabel->setText("版本名称");
+	VersionNameEditer->setGeometry(130, 60, 420, 30);
+	VersionNameEditer->setText(version);
+	VersionNameEditer->setStyleSheet("QLineEdit{border-style: inset;border-color: rgb(0, 170, 255);border-width: 1px 1px 1px 1px;}QLineEdit:focus{border-width: 1.5px 1.5px 1.5px 1.5px;}");
+	VersionNameEditer->setPlaceholderText("最多64字符");
+	VersionNameEditer->setMaxLength(64);
+	SaveButton->setGeometry(440, 340, 110, 40);
+	SaveButton->setStyleSheet("QPushButton{background-color: rgba(0, 0, 0, 30);color: rgb(255, 255, 255);border-style: inset;font-size: 20px;}QPushButton:hover{background-color: rgba(0, 0, 0, 60);}QPushButton:pressed{background-color: rgba(0, 0, 0, 90);}");
+	SaveButton->setText("保存");
+	connect(SaveButton, SIGNAL(clicked()), this, SLOT(on_SaveButton_clicked()));
+	this->show();
+}
+
+void DownloadManageWidget::on_SaveButton_clicked() {
+	QDir dir;
+	if (dir.mkdir("./Game/" + VersionNameEditer->text())) {
+		//跳转到下载界面
+	}
+	else {
+		SMLMessageBox::msgbox(this->parentWidget()->parentWidget()->parentWidget(), Error, "名称已存在，请重新命名（E0002）");
+	}
+}
+
+void DownloadManageWidget::on_TitleIcon_clicked() {
 	previous->show();
 	this->close();
 }

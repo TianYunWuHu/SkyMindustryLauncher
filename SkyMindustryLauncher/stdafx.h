@@ -33,6 +33,17 @@
 #include <Windows.h>
 #include <qeventloop.h>
 #include <qmutex.h>
+#include <qnetwork.h>
+#include <qbytearray.h>
+#include <qnetworkreply.h>
+#include <qnetworkrequest.h>
+#include <qnetworkaccessmanager.h>
+#include <qurl.h>
+#include <qtimer.h>
+#include <qjsondocument.h>
+#include <qjsonvalue.h>
+#include <qjsonobject.h>
+#include <qjsonarray.h>
 #include "scr/global.h"
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1600)

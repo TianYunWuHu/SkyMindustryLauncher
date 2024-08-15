@@ -7,7 +7,8 @@
 struct VersionInfo
 {
 	QString name;
-	int ver;
+	QString ver;
+	QByteArray DownloadURL;
 };
 
 struct CurrentProgress
@@ -55,6 +56,19 @@ signals:
 	void ProgressNumber(double);//总事件数量
 	void progress(CurrentProgress);//每件事的进度
 	void launched();
+};
+
+class GetOnlineGameVersionT :
+	public QThread {
+
+	Q_OBJECT
+
+private:
+	QList<VersionInfo> VerList;
+	void run();
+
+signals:
+	void GetVersionList(QList<VersionInfo> verList);
 };
 
 #endif // !_SML_SMLTHREAD_H_
