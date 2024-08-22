@@ -44,6 +44,7 @@
 #include <qjsonvalue.h>
 #include <qjsonobject.h>
 #include <qjsonarray.h>
+#include <qregularexpression.h>
 #include "scr/global.h"
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1600)

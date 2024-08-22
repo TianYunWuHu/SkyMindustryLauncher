@@ -34,6 +34,7 @@ private:
 	QSettings* setting;
 	QDir dir;
 
+	void VarINIT();//变量初始化
 	void LessWindowsHint();//无边框
 	void EnvironmentINIT();//环境初始化
 	void SettingsINIT();//设置初始化

@@ -104,6 +104,7 @@ public slots:
 	void GotVersionList(QList<VersionInfo>);
 	void ButtonClicked(int);
 	void RefreshList();
+	void GetDownloadStart(VersionInfo);
 
 signals:
 	void showed();
@@ -179,7 +180,7 @@ class DownloadManageWidget :
 	Q_OBJECT
 
 public:
-	DownloadManageWidget(QWidget* parent, SMLWidgets* previous, QString Version);
+	DownloadManageWidget(QWidget* parent, SMLWidgets* previous, VersionInfo version);
 
 private:
 	QLabel* title;
@@ -187,9 +188,40 @@ private:
 	QLabel* VersionNameLabel;//命名标签
 	QLineEdit* VersionNameEditer;//命名编辑框
 	QPushButton* SaveButton;//保存按钮
+	VersionInfo Version;
 
 public slots:
 	void on_SaveButton_clicked();
 	void on_TitleIcon_clicked();
+
+signals:
+	void DownloadStart(VersionInfo);
+};
+
+class DownloadLoadingWidget :
+	public SMLWidgets {
+
+	Q_OBJECT
+
+public:
+	DownloadLoadingWidget(QWidget* parent, SMLWidgets* previous, VersionInfo version);
+private:
+	QLabel* title;
+	QPushButton* TitleIcon;
+	QLabel* DownloadIcon;//下载图标
+	QLabel* DownloadTitle;//具体下载信息
+	QProgressBar* ProgressBar;//进度条
+	QLabel* rate;//进度
+	QLabel* DownloadSchedule;//当前处理事项
+	double ProgressNumber;
+
+public slots:
+	void on_TitleIcon_clicked();
+	void GetProgressNumber(double);
+	void GetCurrentProgress(CurrentProgress);
+	void GetDownloadFinished();
+
+signals:
+	void DownloadPaused();
 };
 #endif // !_SML_SMLWIDGETS_H_

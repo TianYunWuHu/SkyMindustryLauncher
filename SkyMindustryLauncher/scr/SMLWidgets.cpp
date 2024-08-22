@@ -185,6 +185,7 @@ void ConfigWidget::EditButtonClicked(int i) {
 }
 
 void ConfigWidget::RefreshList() {
+	InfoText->setText("正在加载版本列表...");
 	ButtonBox.clear();
 	EditButtonBox.clear();
 	SelectBox.clear();
@@ -291,15 +292,22 @@ void DownloadWidget::ArrangeButton(QWidget* parent) {
 }
 
 void DownloadWidget::ButtonClicked(int i) {
-	next = new DownloadManageWidget(this->parentWidget(), this, ButtonBox.at(i)->text());
+	next = new DownloadManageWidget(this->parentWidget(), this, VerList.at(i));
 	this->hide();
 }
 
 void DownloadWidget::RefreshList() {
+	InfoText->setText("正在加载版本列表...");
 	ButtonBox.clear();
 	VerList.clear();
 	delete VersionListWidget;
 	GOGVT->start();
+}
+
+void DownloadWidget::GetDownloadStart(VersionInfo version) {
+	next = new DownloadLoadingWidget(this->parentWidget(), this, version);
+	next->show();
+	this->hide();
 }
 
 SettingsWidget::SettingsWidget(QWidget* parent) {
@@ -440,7 +448,7 @@ LaunchLoadingWidget::LaunchLoadingWidget(QWidget* parent, SMLWidgets* previous, 
 	ProgressBar->setGeometry(0, 380, 590, 10);
 	ProgressBar->setStyleSheet("QProgressBar{background-color: rgba(0, 0, 0, 30);color: rgb(85, 255, 255);border: 0px}QProgressBar::chunk{background-color: rgb(110, 210, 230);}");
 	ProgressBar->setTextVisible(false);
-	ProgressBar->setValue(50);
+	ProgressBar->setValue(0);
 	rate->setGeometry(535, 360, 50, 20);
 	rate->setStyleSheet("color: rgb(120, 120, 120);");
 	rate->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
@@ -485,9 +493,10 @@ void LaunchLoadingWidget::GetLaunched() {
 	this->close();
 }
 
-DownloadManageWidget::DownloadManageWidget(QWidget* parent, SMLWidgets* previous, QString version) {
+DownloadManageWidget::DownloadManageWidget(QWidget* parent, SMLWidgets* previous, VersionInfo version) {
 	//变量初始化
 	this->previous = previous;
+	Version = version;
 	//创建下载信息界面
 	this->setParent(parent);
 	this->setGeometry(50, 40, 590, 390);
@@ -506,25 +515,30 @@ DownloadManageWidget::DownloadManageWidget(QWidget* parent, SMLWidgets* previous
 	connect(TitleIcon, SIGNAL(clicked()), this, SLOT(on_TitleIcon_clicked()));
 	title->setGeometry(40, 0, 550, 40);
 	title->setStyleSheet("background-color: rgb(255, 255, 255);");
-	title->setText("下载游戏-" + version);
+	title->setText("下载游戏-" + version.ver);
 	VersionNameLabel->setGeometry(40, 60, 90, 30);
 	VersionNameLabel->setText("版本名称");
 	VersionNameEditer->setGeometry(130, 60, 420, 30);
-	VersionNameEditer->setText(version);
+	VersionNameEditer->setText(version.ver);
 	VersionNameEditer->setStyleSheet("QLineEdit{border-style: inset;border-color: rgb(0, 170, 255);border-width: 1px 1px 1px 1px;}QLineEdit:focus{border-width: 1.5px 1.5px 1.5px 1.5px;}");
 	VersionNameEditer->setPlaceholderText("最多64字符");
 	VersionNameEditer->setMaxLength(64);
 	SaveButton->setGeometry(440, 340, 110, 40);
 	SaveButton->setStyleSheet("QPushButton{background-color: rgba(0, 0, 0, 30);color: rgb(255, 255, 255);border-style: inset;font-size: 20px;}QPushButton:hover{background-color: rgba(0, 0, 0, 60);}QPushButton:pressed{background-color: rgba(0, 0, 0, 90);}");
-	SaveButton->setText("保存");
+	SaveButton->setText("下载");
 	connect(SaveButton, SIGNAL(clicked()), this, SLOT(on_SaveButton_clicked()));
+	//连接下载下载时加载界面
+	qRegisterMetaType<VersionInfo>("VersionInfo");
+	connect(this, SIGNAL(DownloadStart(VersionInfo)), previous, SLOT(GetDownloadStart(VersionInfo)));
 	this->show();
 }
 
 void DownloadManageWidget::on_SaveButton_clicked() {
 	QDir dir;
 	if (dir.mkdir("./Game/" + VersionNameEditer->text())) {
-		//跳转到下载界面
+		Version.name = VersionNameEditer->text();
+		emit DownloadStart(Version);
+		this->close();
 	}
 	else {
 		SMLMessageBox::msgbox(this->parentWidget()->parentWidget()->parentWidget(), Error, "名称已存在，请重新命名（E0002）");
@@ -532,6 +546,83 @@ void DownloadManageWidget::on_SaveButton_clicked() {
 }
 
 void DownloadManageWidget::on_TitleIcon_clicked() {
+	previous->show();
+	this->close();
+}
+
+DownloadLoadingWidget::DownloadLoadingWidget(QWidget* parent, SMLWidgets* previous, VersionInfo version) {
+	//变量初始化
+	this->previous = previous;
+	//创建下载时加载界面
+	this->setParent(parent);
+	this->setGeometry(50, 40, 590, 390);
+	this->setStyleSheet("background-color: rgba(0, 0, 0, 0)");
+	//生成控件
+	TitleIcon = new QPushButton(this);
+	title = new QLabel(this);
+	DownloadIcon = new QLabel(this);
+	DownloadTitle = new QLabel(this);
+	ProgressBar = new QProgressBar(this);
+	rate = new QLabel(this);
+	DownloadSchedule = new QLabel(this);
+	//设置控件属性
+	TitleIcon->setGeometry(0, 0, 40, 40);
+	TitleIcon->setStyleSheet("QPushButton{background-color: rgb(255, 255, 255);color: rgb(255, 255, 255);border-style: inset;}QPushButton:hover{background-color: rgb(225, 225, 225);}QPushButton:pressed{background-color: rgb(195, 195, 195);}");
+	TitleIcon->setIcon(QIcon(":/SkyMindustryLauncher/rec/back.png"));
+	TitleIcon->setIconSize(QSize(20, 20));
+	connect(TitleIcon, SIGNAL(clicked()), this, SLOT(on_TitleIcon_clicked()));
+	title->setGeometry(40, 0, 550, 40);
+	title->setStyleSheet("background-color: rgb(255, 255, 255);");
+	title->setText("下载游戏-" + version.name);
+	DownloadIcon->setGeometry(245, 140, 100, 100);
+	DownloadIcon->setPixmap(QPixmap(":/SkyMindustryLauncher/rec/DownloadLoading.png"));
+	DownloadIcon->setScaledContents(true);
+	DownloadTitle->setGeometry(0, 240, 590, 40);
+	DownloadTitle->setStyleSheet("font-size: 20px;");
+	DownloadTitle->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+	DownloadTitle->setText("正在下载：" + version.ver);
+	ProgressBar->setGeometry(0, 380, 590, 10);
+	ProgressBar->setStyleSheet("QProgressBar{background-color: rgba(0, 0, 0, 30);color: rgb(85, 255, 255);border: 0px}QProgressBar::chunk{background-color: rgb(110, 210, 230);}");
+	ProgressBar->setTextVisible(false);
+	ProgressBar->setValue(0);
+	rate->setGeometry(535, 360, 50, 20);
+	rate->setStyleSheet("color: rgb(120, 120, 120);");
+	rate->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+	rate->setText("0%");
+	DownloadSchedule->setGeometry(0, 360, 250, 20);
+	DownloadSchedule->setStyleSheet("color: rgb(120, 120, 120);");
+	DownloadSchedule->setText("准备工作...");
+	//启动下载进程
+	download = new DownloadMainT(version);
+	//下载游戏进程
+	qRegisterMetaType<CurrentProgress>("CurrentProgress");
+	connect(download, SIGNAL(ProgressNumber(double)), this, SLOT(GetProgressNumber(double)));
+	connect(download, SIGNAL(progress(CurrentProgress)), this, SLOT(GetCurrentProgress(CurrentProgress)));
+	connect(download, SIGNAL(DownloadFinished()), this, SLOT(GetDownloadFinished()));
+	connect(this, SIGNAL(DownloadPaused()), download, SLOT(GetDownloadPaused()));
+	download->start();
+	this->show();
+}
+
+void DownloadLoadingWidget::on_TitleIcon_clicked() {
+	if (SMLMessageBox::msgbox(MainWidget, Warn, "退出下载将取消，是否继续？") == 1) {
+		emit DownloadPaused();
+		previous->show();
+		this->close();
+	}
+}
+
+void DownloadLoadingWidget::GetProgressNumber(double i) {
+	ProgressNumber = i;
+}
+
+void DownloadLoadingWidget::GetCurrentProgress(CurrentProgress c) {
+	ProgressBar->setValue(qRound((c.number - 1) / ProgressNumber + (c.percent / ProgressNumber)));
+	rate->setText(QString::number(ProgressBar->value()) + "%");
+	DownloadSchedule->setText(c.matter + "(" + QString::number(c.number) + "/" + QString::number(ProgressNumber) + ")");
+}
+
+void DownloadLoadingWidget::GetDownloadFinished() {
 	previous->show();
 	this->close();
 }

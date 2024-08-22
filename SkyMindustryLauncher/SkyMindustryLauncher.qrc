@@ -15,5 +15,6 @@
         <file>rec/selected.png</file>
         <file>rec/launch.png</file>
         <file>rec/go.png</file>
+        <file>rec/DownloadLoading.png</file>
     </qresource>
 </RCC>

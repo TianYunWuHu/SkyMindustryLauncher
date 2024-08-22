@@ -128,8 +128,6 @@ void GameT::ForceQuit() {
 }
 
 void GetOnlineGameVersionT::run() {
-	logger::log(debug, "%q", QString::number(QSslSocket::supportsSsl()));
-	logger::log(debug, "%q", QSslSocket::sslLibraryBuildVersionString());
 	VerList.clear();
 	QUrl url = QUrl::fromUserInput("https://api.github.com/repos/Anuken/Mindustry/releases");
 	QNetworkAccessManager manager;
@@ -165,4 +163,84 @@ void GetOnlineGameVersionT::run() {
 	{
 		disconnect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
 	}
+}
+
+DownloadMainT::DownloadMainT(VersionInfo version) {
+	Version = version;
+	DownloadURL = "https://gh.xmly.dev/" + version.DownloadURL;
+}
+
+void DownloadMainT::run() {
+	download = new QProcess();
+	emit ProgressNumber(1);
+	CurrentProgress progress1;
+	progress1.matter = "启动aria2";
+	progress1.number = 1;
+	progress1.percent = 0;
+	emit progress(progress1);
+	if (QFileInfo(QDir::currentPath() + "/SML/aria2/aria2c.exe").exists()) {
+		QString DownloaderPath('"' + QDir::currentPath() + "/SML/aria2/aria2c.exe" + '"');
+		QString DownloadGamePath('"' + QDir::currentPath() + "/SML/aria2" + '"');
+		download->start(DownloaderPath + " " + DownloadURL + " " + "-x8 " + "-d " + DownloadGamePath);
+		download->setReadChannel(QProcess::StandardOutput);
+		connect(download, SIGNAL(readyReadStandardOutput()), this, SLOT(GetProgress()));
+		logger::log(debug, QString::number(download->processId()));
+		download->waitForFinished(2147483647);
+
+		if (isCanDownload) {
+			CurrentProgress progress2;
+			progress2.matter = "正在完成下载";
+			progress2.number = 1;
+			progress2.percent = 100;
+			emit progress(progress2);
+			QFile::copy(QDir::currentPath() + "/SML/aria2/Mindustry.jar", QDir::currentPath() + "/Game/" + Version.name + "/Mindustry.jar");
+			QDir().mkdir(QDir::currentPath() + "/Game/" + Version.name + "/Mindustry");
+			QFile SettingFile("./Game/" + Version.name + "/" + Version.name + ".ini");
+			SettingFile.open(QIODevice::NewOnly);
+			SettingFile.close();
+			QSettings setting("./Game/" + Version.name + "/" + Version.name + ".ini", QSettings::IniFormat);
+			setting.setValue("/game/name", Version.name);
+			setting.setValue("/game/version", Version.ver);
+			emit DownloadFinished();
+		}
+	}
+	else
+	{
+		SMLMessageBox::msgbox(MainWidget, Error, "aria2不存在，请重新下载启动器（E0003)");
+	}
+}
+
+void DownloadMainT::GetProgress() {
+	QString output = QString(download->readAllStandardOutput());
+	QRegularExpression re1("(?<=\\()([0-9]*)");
+	QRegularExpressionMatch match1 = re1.match(output);
+	QRegularExpression re2("DL:(\\S+)");
+	QRegularExpressionMatch match2 = re2.match(output);
+	if (match1.hasMatch()) {
+		CurrentProgress progress1;
+		if (match2.captured().mid(3) != "0B]" && match2.captured().mid(3) != "") {
+			progress1.matter = "正在下载 " + match2.captured().mid(3) + "/s ";
+		}
+		else
+		{
+			progress1.matter = "准备下载";
+		}
+		progress1.number = 1;
+		progress1.percent = match1.captured().toDouble();
+		emit progress(progress1);
+	}
+}
+
+void DownloadMainT::GetDownloadPaused() {
+	isCanDownload = false;
+	download->terminate();
+	QProcess::execute("taskkill /IM aria2c.exe /F");
+	QThread::msleep(500);
+	if (QFileInfo("./SML/aria2/Mindustry.jar").exists()) {
+		QFile::remove("./SML/aria2/Mindustry.jar");
+	}
+	if (QFileInfo("./SML/aria2/Mindustry.jar.aria2").exists()) {
+		QFile::remove("./SML/aria2/Mindustry.jar.aria2");
+	}
+	QDir("./Game/" + Version.name).removeRecursively();
 }

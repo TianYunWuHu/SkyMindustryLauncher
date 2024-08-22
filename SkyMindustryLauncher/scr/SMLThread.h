@@ -71,4 +71,29 @@ signals:
 	void GetVersionList(QList<VersionInfo> verList);
 };
 
+class DownloadMainT :
+	public QThread {
+
+	Q_OBJECT
+
+public:
+	DownloadMainT(VersionInfo version);
+
+private:
+	QByteArray DownloadURL;
+	QProcess* download;
+	VersionInfo Version;
+	bool isCanDownload = true;
+	void run();
+
+public slots:
+	void GetProgress();
+	void GetDownloadPaused();
+
+signals:
+	void ProgressNumber(double);//总事件数量
+	void progress(CurrentProgress);//每件事的进度
+	void DownloadFinished();
+};
+
 #endif // !_SML_SMLTHREAD_H_

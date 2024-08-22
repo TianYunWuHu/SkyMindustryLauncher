@@ -4,6 +4,7 @@
 SkyMindustryLauncher::SkyMindustryLauncher(QWidget* parent)
 	: QMainWindow(parent)
 {
+	VarINIT();
 	LessWindowsHint();
 	EnvironmentINIT();
 }
@@ -29,6 +30,9 @@ void SkyMindustryLauncher::mouseMoveEvent(QMouseEvent* e)
 	}
 }
 //构造函数中初始化
+void SkyMindustryLauncher::VarINIT() {
+	MainWidget = this;
+}
 void SkyMindustryLauncher::LessWindowsHint() {
 	ui.setupUi(this);
 	CurrentWidget = nullptr;
