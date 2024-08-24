@@ -505,13 +505,15 @@ LaunchLoadingWidget::LaunchLoadingWidget(QWidget* parent, SMLWidgets* previous, 
 }
 
 void LaunchLoadingWidget::on_TitleIcon_clicked() {
-	connect(this, SIGNAL(SubWidgetClose()), MainWidget, SLOT(SubWidgetClosed()));
-	emit SubWidgetClose();
-	MUTEX.lock();
-	isGameCanLaunch = false;
-	MUTEX.unlock();
-	previous->show();
-	this->close();
+	if (QSettings("./SML/settings.ini", QSettings::IniFormat).value("/game/isRunning").toBool() == false) {
+		connect(this, SIGNAL(SubWidgetClose()), MainWidget, SLOT(SubWidgetClosed()));
+		emit SubWidgetClose();
+		MUTEX.lock();
+		isGameCanLaunch = false;
+		MUTEX.unlock();
+		previous->show();
+		this->close();
+	}
 }
 
 void LaunchLoadingWidget::GetProgressNumber(double i) {
