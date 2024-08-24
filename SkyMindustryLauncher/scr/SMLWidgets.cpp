@@ -2,8 +2,6 @@
 #include "SMLWidgets.h"
 
 SMLWidgets::~SMLWidgets() {
-	delete next;
-	delete previous;
 	next = nullptr;
 	previous = nullptr;
 }
