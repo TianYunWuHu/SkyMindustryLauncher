@@ -172,8 +172,15 @@ void ConfigWidget::ArrangeButton(QWidget* parent) {
 
 void ConfigWidget::ButtonClicked(int i) {
 	QSettings* tempSetting = new QSettings("./SML/settings.ini", QSettings::IniFormat);
-	if (VerList.at(i).name != tempSetting->value("/game/CurrentVersion").toString()) {
-		SelectBox.at(GetSelect())->setPixmap(QPixmap(""));
+	if (tempSetting->value("/game/CurrentVersion").toString() != "") {
+		if (VerList.at(i).name != tempSetting->value("/game/CurrentVersion").toString()) {
+			SelectBox.at(GetSelect())->setPixmap(QPixmap(""));
+			SelectBox.at(i)->setPixmap(QPixmap(":/SkyMindustryLauncher/rec/selected.png"));
+			tempSetting->setValue("/game/CurrentVersion", VerList.at(i).name);
+		}
+	}
+	else
+	{
 		SelectBox.at(i)->setPixmap(QPixmap(":/SkyMindustryLauncher/rec/selected.png"));
 		tempSetting->setValue("/game/CurrentVersion", VerList.at(i).name);
 	}
