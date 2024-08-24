@@ -20,6 +20,9 @@ protected:
 	SMLWidgets* previous = nullptr;//上一个界面
 	SMLWidgets* next = nullptr;//下一个界面
 
+signals:
+	void SubWidgetShow();
+	void SubWidgetClose();
 };
 
 class HomeWidget :

@@ -382,6 +382,9 @@ VersionManageWidget::VersionManageWidget(QWidget* parent, SMLWidgets* previous, 
 	SaveButton->setStyleSheet("QPushButton{background-color: rgba(0, 0, 0, 30);color: rgb(255, 255, 255);border-style: inset;font-size: 20px;}QPushButton:hover{background-color: rgba(0, 0, 0, 60);}QPushButton:pressed{background-color: rgba(0, 0, 0, 90);}");
 	SaveButton->setText("保存");
 	connect(SaveButton, SIGNAL(clicked()), this, SLOT(on_SaveButton_clicked()));
+
+	connect(this, SIGNAL(SubWidgetShow()), MainWidget, SLOT(SubWidgetShowed()));
+	emit SubWidgetShow();
 	this->show();
 }
 
@@ -408,6 +411,8 @@ void VersionManageWidget::on_SaveButton_clicked() {
 			setting->setValue("/game/CurrentVersion", VersionNameEditer->text());
 			delete setting;
 			//返回配置界面
+			connect(this, SIGNAL(SubWidgetClose()), MainWidget, SLOT(SubWidgetClosed()));
+			emit SubWidgetClose();
 			previous->show();
 			this->close();
 		}
@@ -415,6 +420,8 @@ void VersionManageWidget::on_SaveButton_clicked() {
 }
 
 void VersionManageWidget::on_TitleIcon_clicked() {
+	connect(this, SIGNAL(SubWidgetClose()), MainWidget, SLOT(SubWidgetClosed()));
+	emit SubWidgetClose();
 	previous->show();
 	this->close();
 }
@@ -463,17 +470,22 @@ LaunchLoadingWidget::LaunchLoadingWidget(QWidget* parent, SMLWidgets* previous, 
 	LaunchSchedule->setText("准备工作...");
 	//启动游戏进程
 	GameMain = new GameT(GameName);
-	GameMain->start();
 	//连接游戏进程
 	qRegisterMetaType<CurrentProgress>("CurrentProgress");
 	connect(GameMain, SIGNAL(ProgressNumber(double)), this, SLOT(GetProgressNumber(double)));
 	connect(GameMain, SIGNAL(progress(CurrentProgress)), this, SLOT(GetCurrentProgress(CurrentProgress)));
 	connect(GameMain, SIGNAL(launched()), this, SLOT(GetLaunched()));
 	connect(GameMain, SIGNAL(finished()), parent->parent()->parent(), SLOT(GameFinished()));
+
+	connect(this, SIGNAL(SubWidgetShow()), MainWidget, SLOT(SubWidgetShowed()));
+	emit SubWidgetShow();
+	GameMain->start();
 	this->show();
 }
 
 void LaunchLoadingWidget::on_TitleIcon_clicked() {
+	connect(this, SIGNAL(SubWidgetClose()), MainWidget, SLOT(SubWidgetClosed()));
+	emit SubWidgetClose();
 	MUTEX.lock();
 	isGameCanLaunch = false;
 	MUTEX.unlock();
@@ -492,6 +504,8 @@ void LaunchLoadingWidget::GetCurrentProgress(CurrentProgress c) {
 }
 
 void LaunchLoadingWidget::GetLaunched() {
+	connect(this, SIGNAL(SubWidgetClose()), MainWidget, SLOT(SubWidgetClosed()));
+	emit SubWidgetClose();
 	connect(this, SIGNAL(GameLaunched()), previous, SLOT(launched()));
 	emit GameLaunched();
 	previous->show();
@@ -535,12 +549,17 @@ DownloadManageWidget::DownloadManageWidget(QWidget* parent, SMLWidgets* previous
 	//连接下载下载时加载界面
 	qRegisterMetaType<VersionInfo>("VersionInfo");
 	connect(this, SIGNAL(DownloadStart(VersionInfo)), previous, SLOT(GetDownloadStart(VersionInfo)));
+
+	connect(this, SIGNAL(SubWidgetShow()), MainWidget, SLOT(SubWidgetShowed()));
+	emit SubWidgetShow();
 	this->show();
 }
 
 void DownloadManageWidget::on_SaveButton_clicked() {
 	QDir dir;
 	if (dir.mkdir("./Game/" + VersionNameEditer->text())) {
+		connect(this, SIGNAL(SubWidgetClose()), MainWidget, SLOT(SubWidgetClosed()));
+		emit SubWidgetClose();
 		Version.name = VersionNameEditer->text();
 		emit DownloadStart(Version);
 		this->close();
@@ -551,6 +570,8 @@ void DownloadManageWidget::on_SaveButton_clicked() {
 }
 
 void DownloadManageWidget::on_TitleIcon_clicked() {
+	connect(this, SIGNAL(SubWidgetClose()), MainWidget, SLOT(SubWidgetClosed()));
+	emit SubWidgetClose();
 	previous->show();
 	this->close();
 }
@@ -605,12 +626,17 @@ DownloadLoadingWidget::DownloadLoadingWidget(QWidget* parent, SMLWidgets* previo
 	connect(download, SIGNAL(progress(CurrentProgress)), this, SLOT(GetCurrentProgress(CurrentProgress)));
 	connect(download, SIGNAL(DownloadFinished()), this, SLOT(GetDownloadFinished()));
 	connect(this, SIGNAL(DownloadPaused()), download, SLOT(GetDownloadPaused()));
+
+	connect(this, SIGNAL(SubWidgetShow()), MainWidget, SLOT(SubWidgetShowed()));
+	emit SubWidgetShow();
 	download->start();
 	this->show();
 }
 
 void DownloadLoadingWidget::on_TitleIcon_clicked() {
 	if (SMLMessageBox::msgbox(MainWidget, Warn, "退出下载将取消，是否继续？") == 1) {
+		connect(this, SIGNAL(SubWidgetClose()), MainWidget, SLOT(SubWidgetClosed()));
+		emit SubWidgetClose();
 		emit DownloadPaused();
 		previous->show();
 		this->close();
@@ -628,6 +654,8 @@ void DownloadLoadingWidget::GetCurrentProgress(CurrentProgress c) {
 }
 
 void DownloadLoadingWidget::GetDownloadFinished() {
+	connect(this, SIGNAL(SubWidgetClose()), MainWidget, SLOT(SubWidgetClosed()));
+	emit SubWidgetClose();
 	previous->show();
 	this->close();
 }

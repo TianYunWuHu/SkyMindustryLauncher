@@ -25,6 +25,8 @@ public slots:
 	void on_DownloadButton_clicked();
 	void on_SettingsButton_clicked();
 	void GameFinished();
+	void SubWidgetShowed();
+	void SubWidgetClosed();
 
 private:
 	Ui::SkyMindustryLauncherClass ui;

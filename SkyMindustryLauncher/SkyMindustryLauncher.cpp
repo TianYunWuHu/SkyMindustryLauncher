@@ -101,3 +101,16 @@ void SkyMindustryLauncher::GameFinished() {
 	setting.setValue("/game/isRunning", false);
 	emit GameFinish();
 }
+
+void SkyMindustryLauncher::SubWidgetShowed() {
+	ui.HomeButton->setEnabled(false);
+	ui.ConfigButton->setEnabled(false);
+	ui.DownloadButton->setEnabled(false);
+	ui.SettingsButton->setEnabled(false);
+}
+void SkyMindustryLauncher::SubWidgetClosed() {
+	ui.HomeButton->setEnabled(true);
+	ui.ConfigButton->setEnabled(true);
+	ui.DownloadButton->setEnabled(true);
+	ui.SettingsButton->setEnabled(true);
+}
