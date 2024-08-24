@@ -143,11 +143,13 @@ private:
 	QLabel* VersionNameLabel;//重命名标签
 	QLineEdit* VersionNameEditer;//重命名编辑框
 	QPushButton* SaveButton;//保存按钮
+	QPushButton* DeleteButton;//删除按钮
 	QSettings* setting;
 
 public slots:
 	void on_SaveButton_clicked();
 	void on_TitleIcon_clicked();
+	void on_DeleteButton_clicked();
 };
 
 class LaunchLoadingWidget :

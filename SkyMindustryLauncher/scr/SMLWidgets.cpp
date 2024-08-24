@@ -362,6 +362,7 @@ VersionManageWidget::VersionManageWidget(QWidget* parent, SMLWidgets* previous, 
 	VersionNameLabel = new QLabel(this);
 	VersionNameEditer = new QLineEdit(this);
 	SaveButton = new QPushButton(this);
+	DeleteButton = new QPushButton(this);
 	//设置控件属性
 	TitleIcon->setGeometry(0, 0, 40, 40);
 	TitleIcon->setStyleSheet("QPushButton{background-color: rgb(255, 255, 255);color: rgb(255, 255, 255);border-style: inset;font-size: 20px;}QPushButton:hover{background-color: rgb(225, 225, 225);}QPushButton:pressed{background-color: rgb(195, 195, 195);}");
@@ -382,6 +383,10 @@ VersionManageWidget::VersionManageWidget(QWidget* parent, SMLWidgets* previous, 
 	SaveButton->setStyleSheet("QPushButton{background-color: rgba(0, 0, 0, 30);color: rgb(255, 255, 255);border-style: inset;font-size: 20px;}QPushButton:hover{background-color: rgba(0, 0, 0, 60);}QPushButton:pressed{background-color: rgba(0, 0, 0, 90);}");
 	SaveButton->setText("保存");
 	connect(SaveButton, SIGNAL(clicked()), this, SLOT(on_SaveButton_clicked()));
+	DeleteButton->setGeometry(40, 340, 110, 40);
+	DeleteButton->setStyleSheet("QPushButton{background-color: rgba(0, 0, 0, 30);color: rgb(255, 255, 255);border-style: inset;font-size: 20px;}QPushButton:hover{background-color: rgba(0, 0, 0, 60);}QPushButton:pressed{background-color: rgba(0, 0, 0, 90);}");
+	DeleteButton->setText("删除");
+	connect(DeleteButton, SIGNAL(clicked()), this, SLOT(on_DeleteButton_clicked()));
 
 	connect(this, SIGNAL(SubWidgetShow()), MainWidget, SLOT(SubWidgetShowed()));
 	emit SubWidgetShow();
@@ -424,6 +429,22 @@ void VersionManageWidget::on_TitleIcon_clicked() {
 	emit SubWidgetClose();
 	previous->show();
 	this->close();
+}
+
+void VersionManageWidget::on_DeleteButton_clicked() {
+	QString VersionName(setting->value("/game/name").toString());
+	QSettings MainSetting("./SML/settings.ini", QSettings::IniFormat);
+	if (SMLMessageBox::msgbox(MainWidget, Warn, "你会永久失去这个版本（真的很久），是否继续？") == 1) {
+		if (MainSetting.value("/game/CurrentVersion").toString() == VersionName) {
+			MainSetting.setValue("/game/CurrentVersion", "");
+		}
+		delete setting;
+		QDir("./Game/" + VersionName).removeRecursively();
+		connect(this, SIGNAL(SubWidgetClose()), MainWidget, SLOT(SubWidgetClosed()));
+		emit SubWidgetClose();
+		previous->show();
+		this->close();
+	}
 }
 
 LaunchLoadingWidget::LaunchLoadingWidget(QWidget* parent, SMLWidgets* previous, QString GameName) {
