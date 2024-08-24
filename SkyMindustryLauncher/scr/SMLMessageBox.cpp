@@ -35,6 +35,7 @@ MsgWidget::MsgWidget(QWidget* parent, MessageBoxType type, QString text, QString
 	this->TextArea->setGeometry(20, 50, 300, 130);
 	this->TextArea->setAlignment(Qt::AlignLeft | Qt::AlignTop);
 	this->TextArea->setText(text);
+	this->TextArea->setWordWrap(true);
 	this->button1->setGeometry(255, 200, 85, 40);
 	this->button1->setStyleSheet("QPushButton{background-color: rgba(0, 0, 0, 30);color: rgb(255, 255, 255);border-style: inset;font-size: 20px;}QPushButton:hover{background-color: rgba(0, 0, 0, 60);}QPushButton:pressed{background-color: rgba(0, 0, 0, 90);}");
 	this->button1->setText("确定");
@@ -53,7 +54,7 @@ MsgWidget::MsgWidget(QWidget* parent, MessageBoxType type, QString text, QString
 			this->button3->setText(Button3Text);
 			connect(this->button3, &QPushButton::clicked, this, &MsgWidget::Button3);
 		}
-		logger::log(info, text);
+		logger::log(info, "[messagebox]" + text);
 		break;
 	case Warn:
 		this->TitleBar->setText("警告");
@@ -72,7 +73,7 @@ MsgWidget::MsgWidget(QWidget* parent, MessageBoxType type, QString text, QString
 			this->button3->setText(Button3Text);
 			connect(this->button3, &QPushButton::clicked, this, &MsgWidget::Button3);
 		}
-		logger::log(warn, text);
+		logger::log(warn, "[messagebox]" + text);
 		break;
 	case Error:
 		this->TitleBar->setText("错误");
@@ -86,7 +87,7 @@ MsgWidget::MsgWidget(QWidget* parent, MessageBoxType type, QString text, QString
 			this->button3->setText(Button3Text);
 			connect(this->button3, &QPushButton::clicked, this, &MsgWidget::Button3);
 		}
-		logger::log(error, text);
+		logger::log(error, "[messagebox]" + text);
 		break;
 	}
 }
