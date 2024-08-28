@@ -12,6 +12,8 @@ int main(int argc, char* argv[])
 	a.setFont(f);
 	//初始化日志模块
 	logger::initialize();
+	//加载样式
+	QApplication::setStyle(QStyleFactory::create("Fusion"));
 	SkyMindustryLauncher w;
 	w.show();
 	return a.exec();

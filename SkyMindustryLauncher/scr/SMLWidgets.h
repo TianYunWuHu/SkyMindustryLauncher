@@ -124,9 +124,23 @@ public:
 private:
 	QPushButton* TitleIcon;
 	QLabel* title;
-	QWidget* submenu;
-	QScrollArea* OptionScrollArea;
-	QWidget* OptionWidget;
+	QWidget* submenu;//子菜单按钮区
+	QScrollArea* OptionScrollArea = nullptr;
+	QWidget* OptionWidget = nullptr;
+	QPushButton* LauncherOption;//启动器选项
+	QPushButton* GameOption;//游戏选项
+	QPushButton* DownloadOption;//下载选项
+	QPushButton* AboutOption;//关于选项
+	void SwitchLauncher();
+	void SwitchGame();
+	void SwitchDownload();
+	void SwitchAbout();
+
+public slots:
+	void on_LauncherOption_clicked();
+	void on_GameOption_clicked();
+	void on_DownloadOption_clicked();
+	void on_AboutOption_clicked();
 };
 
 class VersionManageWidget :

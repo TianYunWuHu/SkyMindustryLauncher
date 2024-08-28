@@ -324,8 +324,10 @@ SettingsWidget::SettingsWidget(QWidget* parent) {
 	TitleIcon = new QPushButton(this);
 	title = new QLabel(this);
 	submenu = new QWidget(this);
-	OptionScrollArea = new QScrollArea(this);
-	OptionWidget = new QWidget(OptionScrollArea);
+	LauncherOption = new QPushButton(submenu);
+	GameOption = new QPushButton(submenu);
+	DownloadOption = new QPushButton(submenu);
+	AboutOption = new QPushButton(submenu);
 	//设置控件属性
 	TitleIcon->setGeometry(0, 0, 40, 40);
 	TitleIcon->setStyleSheet("border-style:inset;background-color: rgb(255, 255, 255);");
@@ -337,15 +339,323 @@ SettingsWidget::SettingsWidget(QWidget* parent) {
 	title->setText("设置");
 	submenu->setGeometry(0, 40, 100, 350);
 	submenu->setStyleSheet("background-color: rgba(170, 170, 255, 150);");
-	OptionWidget->setGeometry(0, 0, 480, 400);
-	OptionWidget->setMinimumSize(QSize(480, 400));
-	OptionWidget->setStyleSheet("background-color: rgba(0, 0, 0, 0);");
+	LauncherOption->setGeometry(0, 0, 100, 40);
+	LauncherOption->setStyleSheet("QPushButton{background-color: rgba(0, 0, 0, 30);color: rgb(255, 255, 255);border-style: inset;}QPushButton:hover{background-color: rgba(0, 0, 0, 60);}QPushButton:pressed{background-color: rgba(0, 0, 0, 90);}");
+	LauncherOption->setText("启动器");
+	connect(LauncherOption, SIGNAL(clicked()), this, SLOT(on_LauncherOption_clicked()));
+	GameOption->setGeometry(0, 40, 100, 40);
+	GameOption->setStyleSheet("QPushButton{background-color: rgba(0, 0, 0, 30);color: rgb(255, 255, 255);border-style: inset;}QPushButton:hover{background-color: rgba(0, 0, 0, 60);}QPushButton:pressed{background-color: rgba(0, 0, 0, 90);}");
+	GameOption->setText("游戏");
+	connect(GameOption, SIGNAL(clicked()), this, SLOT(on_GameOption_clicked()));
+	DownloadOption->setGeometry(0, 80, 100, 40);
+	DownloadOption->setStyleSheet("QPushButton{background-color: rgba(0, 0, 0, 30);color: rgb(255, 255, 255);border-style: inset;}QPushButton:hover{background-color: rgba(0, 0, 0, 60);}QPushButton:pressed{background-color: rgba(0, 0, 0, 90);}");
+	DownloadOption->setText("下载");
+	connect(DownloadOption, SIGNAL(clicked()), this, SLOT(on_DownloadOption_clicked()));
+	AboutOption->setGeometry(0, 120, 100, 40);
+	AboutOption->setStyleSheet("QPushButton{background-color: rgba(0, 0, 0, 30);color: rgb(255, 255, 255);border-style: inset;}QPushButton:hover{background-color: rgba(0, 0, 0, 60);}QPushButton:pressed{background-color: rgba(0, 0, 0, 90);}");
+	AboutOption->setText("关于");
+	connect(AboutOption, SIGNAL(clicked()), this, SLOT(on_AboutOption_clicked()));
+	this->show();
+	SwitchLauncher();
+}
+
+void SettingsWidget::SwitchLauncher() {
+	title->setText("设置-启动器");
+	delete OptionWidget;
+	delete OptionScrollArea;
+	OptionScrollArea = new QScrollArea(this);
+	OptionWidget = new QWidget();
 	OptionScrollArea->setGeometry(100, 40, 490, 350);
 	OptionScrollArea->setStyleSheet("border: none;");
 	OptionScrollArea->verticalScrollBar()->setStyleSheet("QScrollBar:vertical{width: 10px;padding-top: 0px;padding-bottom: 0px;}QScrollBar::handle:vertical{background-color: rgb(140, 140, 140)}QScrollBar::handle:vertical:hover{background-color: rgb(90, 90, 90)}QScrollBar::add-line:vertical{height: 0px;width: 10px;subcontrol-position: bottom;}QScrollBar::sub-line:vertical{height: 0px;width: 10px;subcontrol-position: top;}QScrollBar::add-page:vertical,QScrollBar::sub-page:vertical{background-color: rgba(0, 0, 0, 0);}");
+	OptionWidget->setGeometry(0, 0, 470, 0);
+	OptionWidget->setMinimumSize(470, 0);
+	OptionWidget->setStyleSheet("background-color: rgba(0, 0, 0, 0);");
+
+	//个性化
+	QVBoxLayout* individualization = new QVBoxLayout();
+	individualization->setSizeConstraint(QLayout::SetMinimumSize);
+	QPushButton* individualization_title = new QPushButton();
+	individualization_title->setMinimumSize(470, 40);
+	individualization_title->setStyleSheet("QPushButton:disabled{color: rgb(0, 0, 0);font-size: 20px; text-align: left; border-bottom: 3px solid #1478f0;}");
+	individualization_title->setText("个性化");
+	individualization_title->setDisabled(true);
+	individualization->addWidget(individualization_title);
+	QHBoxLayout* individualization_WindowTitle = new QHBoxLayout();
+	individualization->addLayout(individualization_WindowTitle);
+	QLabel* individualization_WindowTitle_label = new QLabel();
+	individualization_WindowTitle_label->setMinimumHeight(30);
+	individualization_WindowTitle_label->adjustSize();
+	individualization_WindowTitle_label->setText("自定义窗口标题");
+	individualization_WindowTitle->addWidget(individualization_WindowTitle_label);
+	QLineEdit* individualization_WindowTitle_editer = new QLineEdit();
+	individualization_WindowTitle_editer->setMinimumHeight(30);
+	individualization_WindowTitle_editer->setStyleSheet("QLineEdit{border-style: inset;border-color: rgb(0, 170, 255);border-width: 1px 1px 1px 1px;}QLineEdit:focus{border-width: 1.5px 1.5px 1.5px 1.5px;}");
+	individualization_WindowTitle_editer->setPlaceholderText("仅支持英文、数字，最多40字符，留空为默认");
+	individualization_WindowTitle_editer->setMaxLength(40);
+	individualization_WindowTitle->addWidget(individualization_WindowTitle_editer);
+
+
+	//总
+	QVBoxLayout* main = new QVBoxLayout();
+	main->addLayout(individualization);
+	main->addSpacerItem(new QSpacerItem(0, 470, QSizePolicy::Minimum));
+	OptionWidget->setLayout(main);
 	OptionScrollArea->setWidget(OptionWidget);
 	OptionScrollArea->setWidgetResizable(true);
-	this->show();
+	OptionWidget->setMaximumSize(470, 350);
+
+	OptionScrollArea->show();
+}
+void SettingsWidget::SwitchGame() {
+	title->setText("设置-游戏");
+	delete OptionWidget;
+	delete OptionScrollArea;
+	OptionScrollArea = new QScrollArea(this);
+	OptionWidget = new QWidget();
+	OptionScrollArea->setGeometry(100, 40, 490, 350);
+	OptionScrollArea->setStyleSheet("border: none;");
+	OptionScrollArea->verticalScrollBar()->setStyleSheet("QScrollBar:vertical{width: 10px;padding-top: 0px;padding-bottom: 0px;}QScrollBar::handle:vertical{background-color: rgb(140, 140, 140)}QScrollBar::handle:vertical:hover{background-color: rgb(90, 90, 90)}QScrollBar::add-line:vertical{height: 0px;width: 10px;subcontrol-position: bottom;}QScrollBar::sub-line:vertical{height: 0px;width: 10px;subcontrol-position: top;}QScrollBar::add-page:vertical,QScrollBar::sub-page:vertical{background-color: rgba(0, 0, 0, 0);}");
+	OptionWidget->setGeometry(0, 0, 470, 0);
+	OptionWidget->setMinimumSize(470, 0);
+	OptionWidget->setStyleSheet("background-color: rgba(0, 0, 0, 0);");
+
+	//java设置
+	QVBoxLayout* java = new QVBoxLayout();
+	java->setSizeConstraint(QLayout::SetMinimumSize);
+	QPushButton* java_title = new QPushButton();
+	java_title->setMinimumSize(470, 40);
+	java_title->setStyleSheet("QPushButton:disabled{color: rgb(0, 0, 0);font-size: 20px; text-align: left; border-bottom: 3px solid #1478f0;}");
+	java_title->setText("java设置");
+	java_title->setDisabled(true);
+	java->addWidget(java_title);
+	QHBoxLayout* java_JavaPath = new QHBoxLayout();
+	java->addLayout(java_JavaPath);
+	QLabel* java_JavaPath_label = new QLabel();
+	java_JavaPath_label->setMinimumHeight(30);
+	java_JavaPath_label->adjustSize();
+	java_JavaPath_label->setText("java路径");
+	java_JavaPath->addWidget(java_JavaPath_label);
+	QLineEdit* java_JavaPath_editer = new QLineEdit();
+	java_JavaPath_editer->setMinimumHeight(30);
+	java_JavaPath_editer->setStyleSheet("QLineEdit{border-style: inset;border-color: rgb(0, 170, 255);border-width: 1px 1px 1px 1px;}QLineEdit:focus{border-width: 1.5px 1.5px 1.5px 1.5px;}");
+	java_JavaPath_editer->setPlaceholderText("请使用java17及以上");
+	java_JavaPath->addWidget(java_JavaPath_editer);
+
+	//总
+	QVBoxLayout* main = new QVBoxLayout();
+	main->addLayout(java);
+	main->addSpacerItem(new QSpacerItem(0, 470, QSizePolicy::Minimum));
+	OptionWidget->setLayout(main);
+	OptionScrollArea->setWidget(OptionWidget);
+	OptionScrollArea->setWidgetResizable(true);
+	OptionWidget->setMaximumSize(470, 350);
+
+	OptionScrollArea->show();
+}
+void SettingsWidget::SwitchDownload() {
+	title->setText("设置-下载");
+	delete OptionWidget;
+	delete OptionScrollArea;
+	OptionScrollArea = new QScrollArea(this);
+	OptionWidget = new QWidget();
+	OptionScrollArea->setGeometry(100, 40, 490, 350);
+	OptionScrollArea->setStyleSheet("border: none;");
+	OptionScrollArea->verticalScrollBar()->setStyleSheet("QScrollBar:vertical{width: 10px;padding-top: 0px;padding-bottom: 0px;}QScrollBar::handle:vertical{background-color: rgb(140, 140, 140)}QScrollBar::handle:vertical:hover{background-color: rgb(90, 90, 90)}QScrollBar::add-line:vertical{height: 0px;width: 10px;subcontrol-position: bottom;}QScrollBar::sub-line:vertical{height: 0px;width: 10px;subcontrol-position: top;}QScrollBar::add-page:vertical,QScrollBar::sub-page:vertical{background-color: rgba(0, 0, 0, 0);}");
+	OptionWidget->setGeometry(0, 0, 470, 0);
+	OptionWidget->setMinimumSize(470, 0);
+	OptionWidget->setStyleSheet("background-color: rgba(0, 0, 0, 0);");
+
+	//下载选项
+	QVBoxLayout* DownloadOption = new QVBoxLayout();
+	DownloadOption->setSizeConstraint(QLayout::SetMinimumSize);
+	QPushButton* DownloadOption_title = new QPushButton();
+	DownloadOption_title->setMinimumSize(470, 40);
+	DownloadOption_title->setStyleSheet("QPushButton:disabled{color: rgb(0, 0, 0);font-size: 20px; text-align: left; border-bottom: 3px solid #1478f0;}");
+	DownloadOption_title->setText("下载选项");
+	DownloadOption_title->setDisabled(true);
+	DownloadOption->addWidget(DownloadOption_title);
+	QHBoxLayout* DownloadOption_ConcurrentNumber = new QHBoxLayout();
+	DownloadOption->addLayout(DownloadOption_ConcurrentNumber);
+	QLabel* DownloadOption_ConcurrentNumber_label = new QLabel();
+	DownloadOption_ConcurrentNumber_label->setMinimumHeight(30);
+	DownloadOption_ConcurrentNumber_label->adjustSize();
+	DownloadOption_ConcurrentNumber_label->setText("下载最大并发数");
+	DownloadOption_ConcurrentNumber->addWidget(DownloadOption_ConcurrentNumber_label);
+	QLineEdit* DownloadOption_ConcurrentNumber_editer = new QLineEdit();
+	DownloadOption_ConcurrentNumber_editer->setMinimumHeight(30);
+	DownloadOption_ConcurrentNumber_editer->setStyleSheet("QLineEdit{border-style: inset;border-color: rgb(0, 170, 255);border-width: 1px 1px 1px 1px;}QLineEdit:focus{border-width: 1.5px 1.5px 1.5px 1.5px;}");
+	DownloadOption_ConcurrentNumber_editer->setPlaceholderText("该数值越大下载越快，最大16");
+	DownloadOption_ConcurrentNumber_editer->setValidator(new QIntValidator(DownloadOption_ConcurrentNumber_editer));
+	DownloadOption_ConcurrentNumber->addWidget(DownloadOption_ConcurrentNumber_editer);
+	QHBoxLayout* DownloadOption_source = new QHBoxLayout();
+	DownloadOption->addLayout(DownloadOption_source);
+	QLabel* DownloadOption_source_label = new QLabel();
+	DownloadOption_source_label->setMinimumHeight(30);
+	DownloadOption_source_label->adjustSize();
+	DownloadOption_source_label->setText("下载源");
+	DownloadOption_source->addWidget(DownloadOption_source_label);
+	QButtonGroup* DownloadOption_source_ButtonGroup = new QButtonGroup();
+	QRadioButton* DownloadOption_source_button1 = new QRadioButton();
+	DownloadOption_source_ButtonGroup->addButton(DownloadOption_source_button1);
+	DownloadOption_source_button1->setText("官方源");
+	DownloadOption_source_button1->setStyleSheet("QRadioButton::indicator:unchecked{border-radius: 7px;background-color: rgb(255, 255, 255);border: 2px solid white;}QRadioButton::indicator:checked{border-radius: 7px;background-color: rgb(50, 130, 255);border: 2px solid white;}");
+	DownloadOption_source->addWidget(DownloadOption_source_button1);
+	QRadioButton* DownloadOption_source_button2 = new QRadioButton();
+	DownloadOption_source_ButtonGroup->addButton(DownloadOption_source_button2);
+	DownloadOption_source_button2->setText("镜像源1");
+	DownloadOption_source_button2->setStyleSheet("QRadioButton::indicator:unchecked{border-radius: 7px;background-color: rgb(255, 255, 255);border: 2px solid white;}QRadioButton::indicator:checked{border-radius: 7px;background-color: rgb(50, 130, 255);border: 2px solid white;}");
+	DownloadOption_source->addWidget(DownloadOption_source_button2);
+	QRadioButton* DownloadOption_source_button3 = new QRadioButton();
+	DownloadOption_source_ButtonGroup->addButton(DownloadOption_source_button3);
+	DownloadOption_source_button3->setText("镜像源2");
+	DownloadOption_source_button3->setStyleSheet("QRadioButton::indicator:unchecked{border-radius: 7px;background-color: rgb(255, 255, 255);border: 2px solid white;}QRadioButton::indicator:checked{border-radius: 7px;background-color: rgb(50, 130, 255);border: 2px solid white;}");
+	DownloadOption_source->addWidget(DownloadOption_source_button3);
+
+	//总
+	QVBoxLayout* main = new QVBoxLayout();
+	main->addLayout(DownloadOption);
+	main->addSpacerItem(new QSpacerItem(0, 470, QSizePolicy::Minimum));
+	OptionWidget->setLayout(main);
+	OptionScrollArea->setWidget(OptionWidget);
+	OptionScrollArea->setWidgetResizable(true);
+	OptionWidget->setMaximumSize(470, 350);
+
+	OptionScrollArea->show();
+}
+void SettingsWidget::SwitchAbout() {
+	title->setText("设置-关于");
+	delete OptionWidget;
+	delete OptionScrollArea;
+	OptionScrollArea = new QScrollArea(this);
+	OptionWidget = new QWidget();
+	OptionScrollArea->setGeometry(100, 40, 490, 350);
+	OptionScrollArea->setStyleSheet("border: none;");
+	OptionScrollArea->verticalScrollBar()->setStyleSheet("QScrollBar:vertical{width: 10px;padding-top: 0px;padding-bottom: 0px;}QScrollBar::handle:vertical{background-color: rgb(140, 140, 140)}QScrollBar::handle:vertical:hover{background-color: rgb(90, 90, 90)}QScrollBar::add-line:vertical{height: 0px;width: 10px;subcontrol-position: bottom;}QScrollBar::sub-line:vertical{height: 0px;width: 10px;subcontrol-position: top;}QScrollBar::add-page:vertical,QScrollBar::sub-page:vertical{background-color: rgba(0, 0, 0, 0);}");
+	OptionWidget->setGeometry(0, 0, 470, 0);
+	OptionWidget->setMinimumSize(470, 0);
+	OptionWidget->setStyleSheet("background-color: rgba(0, 0, 0, 0);");
+
+	//关于SkyMindustryLauncher
+	QVBoxLayout* AboutSkyMindustryLauncher = new QVBoxLayout();
+	AboutSkyMindustryLauncher->setSizeConstraint(QLayout::SetMinimumSize);
+	QPushButton* AboutSkyMindustryLauncher_title = new QPushButton();
+	AboutSkyMindustryLauncher_title->setMinimumSize(470, 40);
+	AboutSkyMindustryLauncher_title->setStyleSheet("QPushButton:disabled{color: rgb(0, 0, 0);font-size: 20px; text-align: left; border-bottom: 3px solid #1478f0;}");
+	AboutSkyMindustryLauncher_title->setText("关于SkyMindustryLauncher");
+	AboutSkyMindustryLauncher_title->setDisabled(true);
+	AboutSkyMindustryLauncher->addWidget(AboutSkyMindustryLauncher_title);
+	QHBoxLayout* AboutSkyMindustryLauncher_SML = new QHBoxLayout();
+	AboutSkyMindustryLauncher->addLayout(AboutSkyMindustryLauncher_SML);
+	QLabel* AboutSkyMindustryLauncher_SML_icon = new QLabel();
+	AboutSkyMindustryLauncher_SML_icon->setScaledContents(true);
+	AboutSkyMindustryLauncher_SML_icon->setPixmap(QPixmap(":/SkyMindustryLauncher/rec/icon.png"));
+	AboutSkyMindustryLauncher_SML_icon->setMinimumSize(60, 60);
+	AboutSkyMindustryLauncher_SML_icon->setMaximumSize(60, 60);
+	AboutSkyMindustryLauncher_SML->addWidget(AboutSkyMindustryLauncher_SML_icon);
+	QLabel* AboutSkyMindustryLauncher_SML_introduction = new QLabel();
+	AboutSkyMindustryLauncher_SML_introduction->setMinimumHeight(60);
+	AboutSkyMindustryLauncher_SML_introduction->setWordWrap(true);
+	AboutSkyMindustryLauncher_SML_introduction->setStyleSheet("font-size: 12px;");
+	AboutSkyMindustryLauncher_SML_introduction->setText("SkyMindustryLauncher是一个基于qt5的Mindustry启动器，包含多版本管理和下载游戏功能。");
+	AboutSkyMindustryLauncher_SML->addWidget(AboutSkyMindustryLauncher_SML_introduction);
+	QHBoxLayout* AboutSkyMindustryLauncher_developer = new QHBoxLayout();
+	AboutSkyMindustryLauncher->addLayout(AboutSkyMindustryLauncher_developer);
+	QLabel* AboutSkyMindustryLauncher_developer_icon = new QLabel();
+	AboutSkyMindustryLauncher_developer_icon->setScaledContents(true);
+	AboutSkyMindustryLauncher_developer_icon->setPixmap(QPixmap(":/SkyMindustryLauncher/rec/wuhu.png"));
+	AboutSkyMindustryLauncher_developer_icon->setMinimumSize(60, 60);
+	AboutSkyMindustryLauncher_developer_icon->setMaximumSize(60, 60);
+	AboutSkyMindustryLauncher_developer->addWidget(AboutSkyMindustryLauncher_developer_icon);
+	QLabel* AboutSkyMindustryLauncher_developer_introduction = new QLabel();
+	AboutSkyMindustryLauncher_developer_introduction->setMinimumHeight(60);
+	AboutSkyMindustryLauncher_developer_introduction->setWordWrap(true);
+	AboutSkyMindustryLauncher_developer_introduction->setStyleSheet("font-size: 12px;");
+	AboutSkyMindustryLauncher_developer_introduction->setText("SkyMindustryLauncher所有的代码都是TianYunWuHu一个人敲的，含有许多未知的bug :P");
+	AboutSkyMindustryLauncher_developer->addWidget(AboutSkyMindustryLauncher_developer_introduction);
+	QHBoxLayout* AboutSkyMindustryLauncher_mindustry = new QHBoxLayout();
+	AboutSkyMindustryLauncher->addLayout(AboutSkyMindustryLauncher_mindustry);
+	QLabel* AboutSkyMindustryLauncher_mindustry_icon = new QLabel();
+	AboutSkyMindustryLauncher_mindustry_icon->setScaledContents(true);
+	AboutSkyMindustryLauncher_mindustry_icon->setPixmap(QPixmap(":/SkyMindustryLauncher/rec/mindustry.png"));
+	AboutSkyMindustryLauncher_mindustry_icon->setMinimumSize(60, 60);
+	AboutSkyMindustryLauncher_mindustry_icon->setMaximumSize(60, 60);
+	AboutSkyMindustryLauncher_mindustry->addWidget(AboutSkyMindustryLauncher_mindustry_icon);
+	QLabel* AboutSkyMindustryLauncher_mindustry_introduction = new QLabel();
+	AboutSkyMindustryLauncher_mindustry_introduction->setMinimumHeight(60);
+	AboutSkyMindustryLauncher_mindustry_introduction->setWordWrap(true);
+	AboutSkyMindustryLauncher_mindustry_introduction->setStyleSheet("font-size: 12px;");
+	AboutSkyMindustryLauncher_mindustry_introduction->setText("Mindustry是一个RTS类的塔防游戏，喜欢玩红警和铁锈战争的绝对不能错过！");
+	AboutSkyMindustryLauncher_mindustry->addWidget(AboutSkyMindustryLauncher_mindustry_introduction);
+
+	//开源软件使用声明
+	QVBoxLayout* OpenSource = new QVBoxLayout();
+	OpenSource->setSizeConstraint(QLayout::SetMinimumSize);
+	QPushButton* OpenSource_title = new QPushButton();
+	OpenSource_title->setMinimumSize(470, 40);
+	OpenSource_title->setStyleSheet("QPushButton:disabled{color: rgb(0, 0, 0);font-size: 20px; text-align: left; border-bottom: 3px solid #1478f0;}");
+	OpenSource_title->setText("开源软件使用声明");
+	OpenSource_title->setDisabled(true);
+	OpenSource->addWidget(OpenSource_title);
+	QLabel* OpenSource_tabel = new QLabel();
+	OpenSource_tabel->setText("<table cellspacing=20><tr><th>名称</th><th>版本</th><th>协议</th></tr><tr><td>Mindustry</td><td>All</td><td>GPL3.0</td></tr><tr><td>Qt Framework</td><td>5.12.9</td><td>LGPL3.0|GPL2.0</td></tr><tr><td>Aria2</td><td>1.37.0</td><td>GPL2.0</td></tr></table>");
+	OpenSource_tabel->adjustSize();
+	OpenSource->addWidget(OpenSource_tabel);
+	QPushButton* OpenSource_mindusry = new QPushButton();
+	OpenSource_mindusry->setMinimumHeight(40);
+	OpenSource_mindusry->setText("前往Mindustry官方仓库 ->");
+	OpenSource_mindusry->setStyleSheet("QPushButton{background-color: rgba(0, 0, 0, 30);color: rgb(255, 255, 255);border-style: inset;}QPushButton:hover{background-color: rgba(0, 0, 0, 60);}QPushButton:pressed{background-color: rgba(0, 0, 0, 90);}");
+	OpenSource->addWidget(OpenSource_mindusry);
+	QPushButton* OpenSource_qt = new QPushButton();
+	OpenSource_qt->setMinimumHeight(40);
+	OpenSource_qt->setText("前往Qt Framework官网 ->");
+	OpenSource_qt->setStyleSheet("QPushButton{background-color: rgba(0, 0, 0, 30);color: rgb(255, 255, 255);border-style: inset;}QPushButton:hover{background-color: rgba(0, 0, 0, 60);}QPushButton:pressed{background-color: rgba(0, 0, 0, 90);}");
+	OpenSource->addWidget(OpenSource_qt);
+	QPushButton* OpenSource_aria2 = new QPushButton();
+	OpenSource_aria2->setMinimumHeight(40);
+	OpenSource_aria2->setText("前往Aria2官方仓库 ->");
+	OpenSource_aria2->setStyleSheet("QPushButton{background-color: rgba(0, 0, 0, 30);color: rgb(255, 255, 255);border-style: inset;}QPushButton:hover{background-color: rgba(0, 0, 0, 60);}QPushButton:pressed{background-color: rgba(0, 0, 0, 90);}");
+	OpenSource->addWidget(OpenSource_aria2);
+
+	//特别鸣谢
+	QVBoxLayout* SpecialThanks = new QVBoxLayout();
+	SpecialThanks->setSizeConstraint(QLayout::SetMinimumSize);
+	QPushButton* SpecialThanks_title = new QPushButton();
+	SpecialThanks_title->setMinimumSize(470, 40);
+	SpecialThanks_title->setStyleSheet("QPushButton:disabled{color: rgb(0, 0, 0);font-size: 20px; text-align: left; border-bottom: 3px solid #1478f0;}");
+	SpecialThanks_title->setText("特别鸣谢");
+	SpecialThanks_title->setDisabled(true);
+	SpecialThanks->addWidget(SpecialThanks_title);
+	QLabel* SpecialThanks_1 = new QLabel();
+	SpecialThanks_1->setText("icons8.com\niconfinder.com\n提供了免费的图标！");
+	SpecialThanks_1->adjustSize();
+	SpecialThanks->addWidget(SpecialThanks_1);
+
+	//总
+	QVBoxLayout* main = new QVBoxLayout();
+	main->addLayout(AboutSkyMindustryLauncher);
+	main->addSpacing(20);
+	main->addLayout(OpenSource);
+	main->addSpacing(20);
+	main->addLayout(SpecialThanks);
+	OptionWidget->setLayout(main);
+	OptionScrollArea->setWidget(OptionWidget);
+	OptionScrollArea->setWidgetResizable(true);
+
+	OptionScrollArea->show();
+}
+
+void SettingsWidget::on_LauncherOption_clicked() {
+	SwitchLauncher();
+}
+void SettingsWidget::on_GameOption_clicked() {
+	SwitchGame();
+}
+void SettingsWidget::on_DownloadOption_clicked() {
+	SwitchDownload();
+}
+void SettingsWidget::on_AboutOption_clicked() {
+	SwitchAbout();
 }
 
 VersionManageWidget::VersionManageWidget(QWidget* parent, SMLWidgets* previous, QString SettingPath) {

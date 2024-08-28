@@ -16,5 +16,8 @@
         <file>rec/launch.png</file>
         <file>rec/go.png</file>
         <file>rec/DownloadLoading.png</file>
+        <file>rec/icon.png</file>
+        <file>rec/wuhu.png</file>
+        <file>rec/mindustry.png</file>
     </qresource>
 </RCC>

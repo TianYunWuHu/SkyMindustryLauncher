@@ -45,6 +45,10 @@
 #include <qjsonobject.h>
 #include <qjsonarray.h>
 #include <qregularexpression.h>
+#include <qpalette.h>
+#include <qbuttongroup.h>
+#include <qradiobutton.h>
+#include <qstylefactory.h>
 #include "scr/global.h"
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1600)
