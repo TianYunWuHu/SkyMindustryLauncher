@@ -7,6 +7,7 @@ SkyMindustryLauncher::SkyMindustryLauncher(QWidget* parent)
 	VarINIT();
 	LessWindowsHint();
 	EnvironmentINIT();
+	SettingsINIT();
 }
 
 SkyMindustryLauncher::~SkyMindustryLauncher()
@@ -50,13 +51,12 @@ void SkyMindustryLauncher::EnvironmentINIT() {
 	dir.cd(QDir::currentPath());
 	if (QFileInfo("./SML").isDir() == false) {
 		dir.mkdir("./SML");
-		if (QFile::exists("./SML/settings.ini") == false) {
-			QFile ini("./SML/settings.ini");
-			ini.open(QIODevice::WriteOnly);
-			ini.close();
-			setting = new QSettings("./SML/settings.ini", QSettings::IniFormat);
-			setting->setValue("/game/CurrentVersion", "");
-		}
+	}
+	if (QFile::exists("./SML/settings.ini") == false) {
+		QFile ini("./SML/settings.ini");
+		ini.open(QIODevice::WriteOnly);
+		ini.close();
+		setting = new QSettings("./SML/settings.ini", QSettings::IniFormat);
 	}
 	else
 	{
@@ -67,7 +67,20 @@ void SkyMindustryLauncher::EnvironmentINIT() {
 	}
 }
 void SkyMindustryLauncher::SettingsINIT() {
+	//启动器
+	if (setting->value("/launcher/WindowTitle") == QVariant()) setting->setValue("/launcher/WindowTitle", "");
+	QString title = setting->value("/launcher/WindowTitle").toString();
+	if (title == "") ui.title->setText("  Sky Mindustry Launcher");
+	else ui.title->setText("  " + title);
 
+	//游戏
+	if (setting->value("/game/CurrentVersion") == QVariant()) setting->setValue("/game/CurrentVersion", "");
+	if (setting->value("/game/isRunning") == QVariant()) setting->setValue("/game/isRunning", false);
+	if (setting->value("/game/JavaPath") == QVariant()) setting->setValue("/game/JavaPath", "");
+
+	//下载
+	if (setting->value("/download/ConcurrentNumber") == QVariant()) setting->setValue("/download/ConcurrentNumber", 8);
+	if (setting->value("/download/source") == QVariant()) setting->setValue("/download/source", 1);
 }
 
 void SkyMindustryLauncher::on_MiniButton_clicked() {
@@ -113,4 +126,10 @@ void SkyMindustryLauncher::SubWidgetClosed() {
 	ui.ConfigButton->setEnabled(true);
 	ui.DownloadButton->setEnabled(true);
 	ui.SettingsButton->setEnabled(true);
+}
+
+void SkyMindustryLauncher::WindowTitleChanged(const QString text) {
+	setting->setValue("/launcher/WindowTitle", text);
+	if (text == "") ui.title->setText("  Sky Mindustry Launcher");
+	else ui.title->setText("  " + text);
 }

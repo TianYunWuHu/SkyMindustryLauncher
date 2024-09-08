@@ -27,6 +27,7 @@ public slots:
 	void GameFinished();
 	void SubWidgetShowed();
 	void SubWidgetClosed();
+	void WindowTitleChanged(const QString);
 
 private:
 	Ui::SkyMindustryLauncherClass ui;

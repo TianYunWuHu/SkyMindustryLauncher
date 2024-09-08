@@ -46,6 +46,10 @@ void GameT::run() {
 		progress2.percent = 100;
 		emit progress(progress2);
 		QString GamePath('"' + dir.absolutePath() + "/Game/" + GameName + "/" + "Mindustry.jar" + '"');
+		if (QSettings("./SML/settings.ini", QSettings::IniFormat).value("/game/JavaPath").toString() == "") {
+			isGameCanLaunch = false;
+			emit JavaPathisNull();
+		}
 
 		MUTEX.lock();
 		if (isGameCanLaunch) {
@@ -58,7 +62,7 @@ void GameT::run() {
 			emit progress(progress3);
 			QSettings setting("./SML/settings.ini", QSettings::IniFormat);
 			setting.setValue("/game/isRunning", true);
-			GameProcess.start("java -jar " + GamePath);
+			GameProcess.start(QSettings("./SML/settings.ini", QSettings::IniFormat).value("/game/JavaPath").toString() + " -jar " + GamePath);
 
 			CurrentProgress progress4;
 			progress4.matter = "等待游戏窗口出现";

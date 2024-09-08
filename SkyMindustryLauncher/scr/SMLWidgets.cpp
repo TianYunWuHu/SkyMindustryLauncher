@@ -75,6 +75,10 @@ void HomeWidget::GetGameFinished() {
 	LaunchButton->setText("启动游戏");
 }
 
+void HomeWidget::GetJavaPathisNull() {
+	SMLMessageBox::msgbox(MainWidget, Error, "未选择java，请前往 设置-游戏 中设置java路径（E0004）");
+}
+
 ConfigWidget::ConfigWidget(QWidget* parent) {
 	//创建config界面
 	this->setParent(parent);
@@ -393,8 +397,12 @@ void SettingsWidget::SwitchLauncher() {
 	individualization_WindowTitle_editer->setStyleSheet("QLineEdit{border-style: inset;border-color: rgb(0, 170, 255);border-width: 1px 1px 1px 1px;}QLineEdit:focus{border-width: 1.5px 1.5px 1.5px 1.5px;}");
 	individualization_WindowTitle_editer->setPlaceholderText("仅支持英文、数字，最多40字符，留空为默认");
 	individualization_WindowTitle_editer->setMaxLength(40);
+	QRegularExpression regex("^[a-zA-Z0-9]*$");
+	QRegularExpressionValidator* validator = new QRegularExpressionValidator(regex, individualization_WindowTitle_editer);
+	individualization_WindowTitle_editer->setValidator(validator);
+	individualization_WindowTitle_editer->setText(QSettings("./SML/settings.ini", QSettings::IniFormat).value("/launcher/WindowTitle").toString());
+	connect(individualization_WindowTitle_editer, SIGNAL(textEdited(const QString)), MainWidget, SLOT(WindowTitleChanged(const QString)));
 	individualization_WindowTitle->addWidget(individualization_WindowTitle_editer);
-
 
 	//总
 	QVBoxLayout* main = new QVBoxLayout();
@@ -440,7 +448,15 @@ void SettingsWidget::SwitchGame() {
 	java_JavaPath_editer->setMinimumHeight(30);
 	java_JavaPath_editer->setStyleSheet("QLineEdit{border-style: inset;border-color: rgb(0, 170, 255);border-width: 1px 1px 1px 1px;}QLineEdit:focus{border-width: 1.5px 1.5px 1.5px 1.5px;}");
 	java_JavaPath_editer->setPlaceholderText("请使用java17及以上");
+	java_JavaPath_editer->setText(QSettings("./SML/settings.ini", QSettings::IniFormat).value("/game/JavaPath").toString());
+	java_JavaPath_editer->setReadOnly(true);
 	java_JavaPath->addWidget(java_JavaPath_editer);
+	QPushButton* java_choose = new QPushButton();
+	java_choose->setMinimumHeight(40);
+	java_choose->setText("选择java路径");
+	java_choose->setStyleSheet("QPushButton{background-color: rgba(0, 0, 0, 30);color: rgb(255, 255, 255);border-style: inset;}QPushButton:hover{background-color: rgba(0, 0, 0, 60);}QPushButton:pressed{background-color: rgba(0, 0, 0, 90);}");
+	java->addWidget(java_choose);
+	connect(java_choose, SIGNAL(clicked()), this, SLOT(on_game_java_choose_clicked()));
 
 	//总
 	QVBoxLayout* main = new QVBoxLayout();
@@ -658,6 +674,15 @@ void SettingsWidget::on_AboutOption_clicked() {
 	SwitchAbout();
 }
 
+void SettingsWidget::on_game_java_choose_clicked() {
+	QString JavaPath = QFileDialog::getOpenFileName(MainWidget, "选择java", "./", "Files(java.exe)");
+	if (JavaPath != "") {
+		QSettings setting("./SML/settings.ini", QSettings::IniFormat);
+		setting.setValue("/game/JavaPath", JavaPath);
+		SwitchGame();
+	}
+}
+
 VersionManageWidget::VersionManageWidget(QWidget* parent, SMLWidgets* previous, QString SettingPath) {
 	//变量初始化
 	setting = new QSettings(SettingPath, QSettings::IniFormat);
@@ -807,6 +832,8 @@ LaunchLoadingWidget::LaunchLoadingWidget(QWidget* parent, SMLWidgets* previous, 
 	connect(GameMain, SIGNAL(progress(CurrentProgress)), this, SLOT(GetCurrentProgress(CurrentProgress)));
 	connect(GameMain, SIGNAL(launched()), this, SLOT(GetLaunched()));
 	connect(GameMain, SIGNAL(finished()), parent->parent()->parent(), SLOT(GameFinished()));
+	connect(GameMain, SIGNAL(JavaPathisNull()), this->previous, SLOT(GetJavaPathisNull()));
+	connect(GameMain, SIGNAL(JavaPathisNull()), this, SLOT(on_TitleIcon_clicked()));
 
 	connect(this, SIGNAL(SubWidgetShow()), MainWidget, SLOT(SubWidgetShowed()));
 	emit SubWidgetShow();

@@ -45,6 +45,7 @@ public slots:
 	void on_LaunchButton_clicked();
 	void launched();
 	void GetGameFinished();
+	void GetJavaPathisNull();
 
 signals:
 	void ForceQuit();
@@ -141,6 +142,10 @@ public slots:
 	void on_GameOption_clicked();
 	void on_DownloadOption_clicked();
 	void on_AboutOption_clicked();
+	void on_game_java_choose_clicked();
+
+signals:
+	void WindowTitleChange(QString);
 };
 
 class VersionManageWidget :

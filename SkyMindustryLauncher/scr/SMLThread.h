@@ -56,6 +56,7 @@ signals:
 	void ProgressNumber(double);//总事件数量
 	void progress(CurrentProgress);//每件事的进度
 	void launched();
+	void JavaPathisNull();
 };
 
 class GetOnlineGameVersionT :
