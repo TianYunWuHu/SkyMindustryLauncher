@@ -66,6 +66,45 @@ void SkyMindustryLauncher::EnvironmentINIT() {
 	if (dir.exists("Game") == false) {
 		dir.mkdir("Game");
 	}
+	if (dir.exists("./SML/aria2") == false) {
+		dir.mkdir("./SML/aria2");
+	}
+	if (QFile::exists("./SML/aria2/aria2c.exe") == false) {
+		QFile f(":/SkyMindustryLauncher/rec/aria2/aria2c.exe");
+		f.open(QIODevice::ReadOnly);
+		QFile ft("./SML/aria2/aria2c.exe");
+		ft.open(QIODevice::WriteOnly);
+		ft.write(f.readAll());
+		f.close();
+		ft.close();
+	}
+	if (QFile::exists("./SML/aria2/AUTHORS") == false) {
+		QFile f(":/SkyMindustryLauncher/rec/aria2/AUTHORS");
+		f.open(QIODevice::ReadOnly);
+		QFile ft("./SML/aria2/AUTHORS");
+		ft.open(QIODevice::WriteOnly);
+		ft.write(f.readAll());
+		f.close();
+		ft.close();
+	}
+	if (QFile::exists("./SML/aria2/COPYING") == false) {
+		QFile f(":/SkyMindustryLauncher/rec/aria2/COPYING");
+		f.open(QIODevice::ReadOnly);
+		QFile ft("./SML/aria2/COPYING");
+		ft.open(QIODevice::WriteOnly);
+		ft.write(f.readAll());
+		f.close();
+		ft.close();
+	}
+	if (QFile::exists("./SML/aria2/LICENSE.OpenSSL") == false) {
+		QFile f(":/SkyMindustryLauncher/rec/aria2/LICENSE.OpenSSL");
+		f.open(QIODevice::ReadOnly);
+		QFile ft("./SML/aria2/LICENSE.OpenSSL");
+		ft.open(QIODevice::WriteOnly);
+		ft.write(f.readAll());
+		f.close();
+		ft.close();
+	}
 }
 void SkyMindustryLauncher::SettingsINIT() {
 	//启动器

@@ -19,5 +19,9 @@
         <file>rec/icon.png</file>
         <file>rec/wuhu.png</file>
         <file>rec/mindustry.png</file>
+        <file>rec/aria2/aria2c.exe</file>
+        <file>rec/aria2/COPYING</file>
+        <file>rec/aria2/AUTHORS</file>
+        <file>rec/aria2/LICENSE.OpenSSL</file>
     </qresource>
 </RCC>
