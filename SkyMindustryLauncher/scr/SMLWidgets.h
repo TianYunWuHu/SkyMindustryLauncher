@@ -146,6 +146,9 @@ public slots:
 	void on_DownloadOption_source_button1_clicked(bool);
 	void on_DownloadOption_source_button2_clicked(bool);
 	void on_DownloadOption_source_button3_clicked(bool);
+	void on_OpenSource_mindusry_clicked();
+	void on_OpenSource_qt_clicked();
+	void on_OpenSource_aria2_clicked();
 
 signals:
 	void WindowTitleChange(QString);

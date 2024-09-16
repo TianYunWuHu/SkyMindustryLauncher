@@ -640,16 +640,19 @@ void SettingsWidget::SwitchAbout() {
 	OpenSource_mindusry->setMinimumHeight(40);
 	OpenSource_mindusry->setText("前往Mindustry官方仓库 ->");
 	OpenSource_mindusry->setStyleSheet("QPushButton{background-color: rgba(0, 0, 0, 30);color: rgb(255, 255, 255);border-style: inset;}QPushButton:hover{background-color: rgba(0, 0, 0, 60);}QPushButton:pressed{background-color: rgba(0, 0, 0, 90);}");
+	connect(OpenSource_mindusry, SIGNAL(clicked()), this, SLOT(on_OpenSource_mindusry_clicked()));
 	OpenSource->addWidget(OpenSource_mindusry);
 	QPushButton* OpenSource_qt = new QPushButton();
 	OpenSource_qt->setMinimumHeight(40);
 	OpenSource_qt->setText("前往Qt Framework官网 ->");
 	OpenSource_qt->setStyleSheet("QPushButton{background-color: rgba(0, 0, 0, 30);color: rgb(255, 255, 255);border-style: inset;}QPushButton:hover{background-color: rgba(0, 0, 0, 60);}QPushButton:pressed{background-color: rgba(0, 0, 0, 90);}");
+	connect(OpenSource_qt, SIGNAL(clicked()), this, SLOT(on_OpenSource_qt_clicked()));
 	OpenSource->addWidget(OpenSource_qt);
 	QPushButton* OpenSource_aria2 = new QPushButton();
 	OpenSource_aria2->setMinimumHeight(40);
 	OpenSource_aria2->setText("前往Aria2官方仓库 ->");
 	OpenSource_aria2->setStyleSheet("QPushButton{background-color: rgba(0, 0, 0, 30);color: rgb(255, 255, 255);border-style: inset;}QPushButton:hover{background-color: rgba(0, 0, 0, 60);}QPushButton:pressed{background-color: rgba(0, 0, 0, 90);}");
+	connect(OpenSource_aria2, SIGNAL(clicked()), this, SLOT(on_OpenSource_aria2_clicked()));
 	OpenSource->addWidget(OpenSource_aria2);
 
 	//特别鸣谢
@@ -719,6 +722,16 @@ void SettingsWidget::on_DownloadOption_source_button3_clicked(bool b) {
 		QSettings("./SML/settings.ini", QSettings::IniFormat).setValue("/download/source", 3);
 		SwitchDownload();
 	}
+}
+
+void SettingsWidget::on_OpenSource_mindusry_clicked() {
+	QDesktopServices::openUrl(QUrl::fromUserInput("https://github.com/Anuken/Mindustry"));
+}
+void SettingsWidget::on_OpenSource_qt_clicked() {
+	QDesktopServices::openUrl(QUrl::fromUserInput("https://www.qt.io/"));
+}
+void SettingsWidget::on_OpenSource_aria2_clicked() {
+	QDesktopServices::openUrl(QUrl::fromUserInput("https://github.com/aria2/aria2"));
 }
 
 VersionManageWidget::VersionManageWidget(QWidget* parent, SMLWidgets* previous, QString SettingPath) {

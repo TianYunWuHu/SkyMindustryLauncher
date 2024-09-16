@@ -50,6 +50,7 @@
 #include <qradiobutton.h>
 #include <qstylefactory.h>
 #include <qfiledialog.h>
+#include <qdesktopservices.h>
 #include "scr/global.h"
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1600)
