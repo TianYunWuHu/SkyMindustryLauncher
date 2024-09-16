@@ -502,7 +502,9 @@ void SettingsWidget::SwitchDownload() {
 	DownloadOption_ConcurrentNumber_editer->setMinimumHeight(30);
 	DownloadOption_ConcurrentNumber_editer->setStyleSheet("QLineEdit{border-style: inset;border-color: rgb(0, 170, 255);border-width: 1px 1px 1px 1px;}QLineEdit:focus{border-width: 1.5px 1.5px 1.5px 1.5px;}");
 	DownloadOption_ConcurrentNumber_editer->setPlaceholderText("该数值越大下载越快，最大16");
-	DownloadOption_ConcurrentNumber_editer->setValidator(new QIntValidator(DownloadOption_ConcurrentNumber_editer));
+	DownloadOption_ConcurrentNumber_editer->setValidator(new QIntValidator(1, 16, DownloadOption_ConcurrentNumber_editer));
+	DownloadOption_ConcurrentNumber_editer->setText(QSettings("./SML/settings.ini", QSettings::IniFormat).value("/download/ConcurrentNumber").toString());
+	connect(DownloadOption_ConcurrentNumber_editer, SIGNAL(textEdited(const QString)), MainWidget, SLOT(ConcurrentNumberChanged(const QString)));
 	DownloadOption_ConcurrentNumber->addWidget(DownloadOption_ConcurrentNumber_editer);
 	QHBoxLayout* DownloadOption_source = new QHBoxLayout();
 	DownloadOption->addLayout(DownloadOption_source);
@@ -516,17 +518,34 @@ void SettingsWidget::SwitchDownload() {
 	DownloadOption_source_ButtonGroup->addButton(DownloadOption_source_button1);
 	DownloadOption_source_button1->setText("官方源");
 	DownloadOption_source_button1->setStyleSheet("QRadioButton::indicator:unchecked{border-radius: 7px;background-color: rgb(255, 255, 255);border: 2px solid white;}QRadioButton::indicator:checked{border-radius: 7px;background-color: rgb(50, 130, 255);border: 2px solid white;}");
+	connect(DownloadOption_source_button1, SIGNAL(clicked(bool)), this, SLOT(on_DownloadOption_source_button1_clicked(bool)));
 	DownloadOption_source->addWidget(DownloadOption_source_button1);
 	QRadioButton* DownloadOption_source_button2 = new QRadioButton();
 	DownloadOption_source_ButtonGroup->addButton(DownloadOption_source_button2);
 	DownloadOption_source_button2->setText("镜像源1");
 	DownloadOption_source_button2->setStyleSheet("QRadioButton::indicator:unchecked{border-radius: 7px;background-color: rgb(255, 255, 255);border: 2px solid white;}QRadioButton::indicator:checked{border-radius: 7px;background-color: rgb(50, 130, 255);border: 2px solid white;}");
+	connect(DownloadOption_source_button2, SIGNAL(clicked(bool)), this, SLOT(on_DownloadOption_source_button2_clicked(bool)));
 	DownloadOption_source->addWidget(DownloadOption_source_button2);
 	QRadioButton* DownloadOption_source_button3 = new QRadioButton();
 	DownloadOption_source_ButtonGroup->addButton(DownloadOption_source_button3);
 	DownloadOption_source_button3->setText("镜像源2");
 	DownloadOption_source_button3->setStyleSheet("QRadioButton::indicator:unchecked{border-radius: 7px;background-color: rgb(255, 255, 255);border: 2px solid white;}QRadioButton::indicator:checked{border-radius: 7px;background-color: rgb(50, 130, 255);border: 2px solid white;}");
+	connect(DownloadOption_source_button3, SIGNAL(clicked(bool)), this, SLOT(on_DownloadOption_source_button3_clicked(bool)));
 	DownloadOption_source->addWidget(DownloadOption_source_button3);
+	switch (QSettings("./SML/settings.ini", QSettings::IniFormat).value("/download/source").toInt())
+	{
+	case 1:
+		DownloadOption_source_button1->setChecked(true);
+		break;
+	case 2:
+		DownloadOption_source_button2->setChecked(true);
+		break;
+	case 3:
+		DownloadOption_source_button3->setChecked(true);
+		break;
+	default:
+		break;
+	}
 
 	//总
 	QVBoxLayout* main = new QVBoxLayout();
@@ -680,6 +699,25 @@ void SettingsWidget::on_game_java_choose_clicked() {
 		QSettings setting("./SML/settings.ini", QSettings::IniFormat);
 		setting.setValue("/game/JavaPath", JavaPath);
 		SwitchGame();
+	}
+}
+
+void SettingsWidget::on_DownloadOption_source_button1_clicked(bool b) {
+	if (b) {
+		QSettings("./SML/settings.ini", QSettings::IniFormat).setValue("/download/source", 1);
+		SwitchDownload();
+	}
+}
+void SettingsWidget::on_DownloadOption_source_button2_clicked(bool b) {
+	if (b) {
+		QSettings("./SML/settings.ini", QSettings::IniFormat).setValue("/download/source", 2);
+		SwitchDownload();
+	}
+}
+void SettingsWidget::on_DownloadOption_source_button3_clicked(bool b) {
+	if (b) {
+		QSettings("./SML/settings.ini", QSettings::IniFormat).setValue("/download/source", 3);
+		SwitchDownload();
 	}
 }
 

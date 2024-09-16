@@ -143,6 +143,9 @@ public slots:
 	void on_DownloadOption_clicked();
 	void on_AboutOption_clicked();
 	void on_game_java_choose_clicked();
+	void on_DownloadOption_source_button1_clicked(bool);
+	void on_DownloadOption_source_button2_clicked(bool);
+	void on_DownloadOption_source_button3_clicked(bool);
 
 signals:
 	void WindowTitleChange(QString);

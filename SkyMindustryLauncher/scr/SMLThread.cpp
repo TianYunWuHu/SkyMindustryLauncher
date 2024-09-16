@@ -171,7 +171,21 @@ void GetOnlineGameVersionT::run() {
 
 DownloadMainT::DownloadMainT(VersionInfo version) {
 	Version = version;
-	DownloadURL = "https://gh.xmly.dev/" + version.DownloadURL;
+	switch (QSettings("./SML/settings.ini", QSettings::IniFormat).value("/download/source").toInt())
+	{
+	case 1:
+		DownloadURL = version.DownloadURL;
+		break;
+	case 2:
+		DownloadURL = "https://gh.xmly.dev/" + version.DownloadURL;
+		break;
+	case 3:
+		DownloadURL = "https://ghproxy.net/" + version.DownloadURL;
+		break;
+	default:
+		DownloadURL = version.DownloadURL;
+		break;
+	}
 }
 
 void DownloadMainT::run() {
@@ -185,7 +199,7 @@ void DownloadMainT::run() {
 	if (QFileInfo(QDir::currentPath() + "/SML/aria2/aria2c.exe").exists()) {
 		QString DownloaderPath('"' + QDir::currentPath() + "/SML/aria2/aria2c.exe" + '"');
 		QString DownloadGamePath('"' + QDir::currentPath() + "/SML/aria2" + '"');
-		download->start(DownloaderPath + " " + DownloadURL + " " + "-x8 " + "-d " + DownloadGamePath);
+		download->start(DownloaderPath + " " + DownloadURL + " -x" + QSettings("./SML/settings.ini", QSettings::IniFormat).value("/download/ConcurrentNumber").toString() + " " + "-d " + DownloadGamePath);
 		download->setReadChannel(QProcess::StandardOutput);
 		connect(download, SIGNAL(readyReadStandardOutput()), this, SLOT(GetProgress()));
 		logger::log(debug, QString::number(download->processId()));

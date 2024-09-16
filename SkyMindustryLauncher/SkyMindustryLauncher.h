@@ -28,6 +28,7 @@ public slots:
 	void SubWidgetShowed();
 	void SubWidgetClosed();
 	void WindowTitleChanged(const QString);
+	void ConcurrentNumberChanged(const QString);
 
 private:
 	Ui::SkyMindustryLauncherClass ui;

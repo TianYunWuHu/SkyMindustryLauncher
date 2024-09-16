@@ -133,3 +133,8 @@ void SkyMindustryLauncher::WindowTitleChanged(const QString text) {
 	if (text == "") ui.title->setText("  Sky Mindustry Launcher");
 	else ui.title->setText("  " + text);
 }
+void SkyMindustryLauncher::ConcurrentNumberChanged(const QString number) {
+	if (number.toInt() >= 1 && number.toInt() <= 16) {
+		setting->setValue("/download/ConcurrentNumber", number);
+	}
+}
