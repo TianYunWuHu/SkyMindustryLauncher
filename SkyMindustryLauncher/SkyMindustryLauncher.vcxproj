@@ -128,6 +128,7 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="resource.h" />
     <ClInclude Include="scr\global.h" />
     <ClInclude Include="scr\log.h" />
     <ClInclude Include="stdafx.h" />
@@ -135,6 +136,14 @@
     <QtMoc Include="scr\SMLThread.h" />
     <QtMoc Include="scr\SMLMessageBox.h" />
     <QtMoc Include="scr\SMLWidgets.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="resource.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="icon1.ico" />
+    <Image Include="rec\icon.ico" />
+    <Image Include="rec\icon.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

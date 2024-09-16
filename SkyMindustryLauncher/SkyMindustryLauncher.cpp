@@ -36,6 +36,7 @@ void SkyMindustryLauncher::VarINIT() {
 }
 void SkyMindustryLauncher::LessWindowsHint() {
 	ui.setupUi(this);
+	this->setWindowIcon(QIcon(":/SkyMindustryLauncher/rec/icon.png"));
 	CurrentWidget = nullptr;
 	//设置无边框
 	setWindowFlags(windowFlags() | Qt::FramelessWindowHint);
